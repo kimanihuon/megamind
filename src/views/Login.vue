@@ -1,21 +1,24 @@
 <template>
   <v-container class="fill-height d-flex justify-center align-center">
-    <v-card class="mx-auto px-6 py-6" width="420" height="520">
-      <v-row no-gutters>
-        <v-col>
-          <v-card-title class="px-0 py-6">WELCOME TO WESKOOL</v-card-title>
-        </v-col>
+    <v-card class="mx-auto" width="420" height="520">
+
+      <!-- Banner -->
+      <v-toolbar color="primary" dark flat class="d-flex justify-center mb-4">
+        <v-toolbar-title >WESKOOL</v-toolbar-title>
+      </v-toolbar>
+
+      <v-row no-gutters class="px-6 py-6">
 
         <!-- Username -->
         <v-col cols="12">
-          <v-text-field label="username" outlined></v-text-field>
+          <v-text-field label="username" outlined prepend-inner-icon="mdi-account"></v-text-field>
         </v-col>
 
         <!-- Email -->
         <v-col cols="12" :class=" signup ? 'email' : 'emailhide' ">
-          <v-text-field label="email" outlined type="email"></v-text-field>
+          <v-text-field label="email" outlined type="email" prepend-inner-icon="mdi-email"></v-text-field>
         </v-col>
-        
+
         <!-- Password -->
         <v-col cols="12" :class="signup ? 'move' : 'moveback'">
           <v-text-field
@@ -23,6 +26,7 @@
             outlined
             v-model="password"
             :append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
+            prepend-inner-icon="mdi-lock"
             :rules="[rules.required, rules.min]"
             :type="show ? 'text' : 'password'"
             name="input-10-1"
@@ -34,16 +38,12 @@
 
         <!-- remember me -->
         <v-col cols="6" :class="signup ? 'move' : 'moveback'">
-          <v-checkbox
-            v-model="custom"
-            label="Remember me"
-            class="pa-0 ma-0 pt-2"
-          ></v-checkbox>
+          <v-checkbox v-model="custom" label="Remember me" class="pa-0 ma-0 pt-2"></v-checkbox>
         </v-col>
 
         <!-- Password -->
         <v-col cols="6" align="right" :class="signup ? 'move' : 'moveback'">
-          <p class=" pa-0 ma-0 pt-2">
+          <p class="pa-0 ma-0 pt-2">
             <a href="#">Forgot password</a>
           </p>
         </v-col>
@@ -57,7 +57,7 @@
             @click=" signup ? signup = false : '' "
           >Sign In</v-btn>
         </v-col>
-        
+
         <!-- Signup button -->
         <v-col cols="6" align="end" class="py-4 register">
           <v-btn
@@ -85,15 +85,13 @@ export default {
         min: v => v.length >= 8 || "Min 8 characters"
       }
     };
-  },
-
+  }
 };
 </script>
 
 
 <style lang="scss" scoped>
-
-$move : 0.65s;
+$move: 0.65s;
 
 .login,
 .register {
