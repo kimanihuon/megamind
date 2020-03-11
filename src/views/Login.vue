@@ -11,7 +11,7 @@
 
         <!-- Username -->
         <v-col cols="12">
-          <v-text-field label="username" outlined prepend-inner-icon="mdi-account"></v-text-field>
+          <v-text-field label="email or username" outlined prepend-inner-icon="mdi-account"></v-text-field>
         </v-col>
 
         <!-- Email -->
