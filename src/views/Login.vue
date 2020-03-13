@@ -1,17 +1,15 @@
 <template>
   <v-container class="fill-height d-flex justify-center align-center">
     <v-card class="mx-auto" width="420" height="520">
-
       <!-- Banner -->
       <v-toolbar color="primary" dark flat class="d-flex justify-center mb-4">
-        <v-toolbar-title >WESKOOL</v-toolbar-title>
+        <v-toolbar-title>WESKOOL</v-toolbar-title>
       </v-toolbar>
 
       <v-row no-gutters class="px-6 py-6">
-
         <!-- Username -->
         <v-col cols="12">
-          <v-text-field label="email or username" outlined prepend-inner-icon="mdi-account"></v-text-field>
+          <v-text-field label="Username" outlined prepend-inner-icon="mdi-account"></v-text-field>
         </v-col>
 
         <!-- Email -->
@@ -54,7 +52,7 @@
             :class=" signup ? 'move login' : 'moveback login' "
             rounded
             :color="signup ? 'grey' : 'blue'"
-            @click=" signup ? signup = false : '' "
+            @click=" signup ? signup = false : login() "
           >Sign In</v-btn>
         </v-col>
 
@@ -73,6 +71,9 @@
 </template>
 
 <script>
+import axios from "axios";
+
+
 export default {
   data() {
     return {
@@ -85,6 +86,25 @@ export default {
         min: v => v.length >= 8 || "Min 8 characters"
       }
     };
+  },
+
+  methods: {
+    login() {
+      // Solves problem of invalid csrf token using: withCredentials: true
+      axios.create({withCredentials: true}).post("http://localhost:5443/api/login")
+    }
+  },
+
+  created() {
+    // Solves problem of invalid csrf token using: withCredentials: true
+    axios.create({withCredentials: true}).get("http://localhost:5443/api/access").then(
+      response => {
+        console.log(response)
+      },
+      err => {
+        console.log(err);
+      }
+    );
   }
 };
 </script>

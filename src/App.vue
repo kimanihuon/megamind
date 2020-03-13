@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <!-- Nav and Drawer -->
-    <Nav v-if="auth"> </Nav>
+    <Nav v-if="auth"></Nav>
 
     <!-- View -->
     <v-content>
@@ -16,7 +16,7 @@
 </template>
 
 <script>
-import Nav from './components/Nav'
+import Nav from "./components/Nav";
 
 export default {
   name: "App",
@@ -25,12 +25,10 @@ export default {
     Nav
   },
 
-  data: () => ({
-
-  }),
+  data: () => ({}),
 
   computed: {
-    auth(){
+    auth() {
       return this.$store.state.auth;
     }
   },
@@ -38,6 +36,5 @@ export default {
   created() {
     this.$vuetify.theme.dark = true;
   }
-
 };
 </script>
