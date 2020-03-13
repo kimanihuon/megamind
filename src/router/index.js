@@ -1,7 +1,7 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
-import store from "../store";
-import Login from "../views/Login"
+import store from "../store/index";
+import Login from "../views/Login";
 
 Vue.use(VueRouter);
 
@@ -36,19 +36,34 @@ const router = new VueRouter({
   routes,
 });
 
+
 router.beforeEach((to, from, next) => {
-  if (!store.state.auth && to.path !== '/login') {
-    next('/login')
-  }
-  else {
-    if (to.path == '/') {
-      next('/dashboard')
-    } else if (to.path == '/login' && store.state.auth == true) {
-      next('/dashboard')
-    } else {
-      next()
-    }
-  }
+
+  // Verify login status
+  Vue.prototype.$http.create({ withCredentials: true })
+    .post("http://localhost:5443/api/login/verify")
+    .then(response => {
+      if (response.data.authorized) {
+        store.dispatch("auth");
+        if (to.path == '/' || to.path == '/login' ) {
+          next('/dashboard')
+        } 
+        else {
+          next()
+        }
+
+      } else {
+        store.dispatch("deauth");
+        next('/login')
+      }
+    },
+      err => {
+        err
+        store.dispatch("deauth");
+        next()
+      }
+    );
+
 })
 
 
