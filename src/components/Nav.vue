@@ -1,30 +1,21 @@
 <template>
   <v-container>
     <!-- Other option: clipped -->
-    <v-navigation-drawer v-model="drawer" app clipped>
+    <v-navigation-drawer
+      v-model="drawer"
+      app
+      clipped
+      :mini-variant="miniVariant"
+      :expand-on-hover="expandOnHover"
+    >
       <v-list dense>
-        <v-list-item link>
+        <!-- Drawer items -->
+        <v-list-item link v-for="(item, i) in pages" :key="i" :to="item.link">
           <v-list-item-action>
-            <v-icon>mdi-view-dashboard</v-icon>
+            <v-icon>{{ item.icon }}</v-icon>
           </v-list-item-action>
           <v-list-item-content>
-            <v-list-item-title>Dashboard</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-        <v-list-item link>
-          <v-list-item-action>
-            <v-icon>mdi-cog</v-icon>
-          </v-list-item-action>
-          <v-list-item-content>
-            <v-list-item-title>Settings</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-        <v-list-item link>
-          <v-list-item-action>
-            <v-icon>mdi-chat</v-icon>
-          </v-list-item-action>
-          <v-list-item-content>
-            <v-list-item-title>Chat</v-list-item-title>
+            <v-list-item-title>{{ item.name }}</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
       </v-list>
@@ -53,7 +44,18 @@ export default {
       drawer: null
     };
   },
+  computed: {
+    pages() {
+      return this.$store.state.pages;
+    },
+    miniVariant() {
+      return this.$store.state.miniDrawer;
+    },
+    expandOnHover() {
+      return this.$store.state.expandOnHover;
+    }
 
+  },
   created() {
     this.$vuetify.theme.dark = true;
   }

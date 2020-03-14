@@ -34,7 +34,7 @@ export default {
   },
 
   created() {
-    this.$vuetify.theme.dark = true;
+    this.$vuetify.theme.dark = this.$store.state.darkTheme;
   }
 };
 </script>

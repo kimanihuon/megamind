@@ -16,7 +16,25 @@ const routes = [
     path: "/dashboard",
     name: "Dashboard",
     component: () => import(/* webpackChunkName: "dashboard" */ "../views/Dashboard.vue")
-  }
+  },
+
+  {
+    path: "/chat",
+    name: "Chat",
+    component: () => import(/* webpackChunkName: "dashboard" */ "../views/Chat.vue")
+  },
+
+  {
+    path: "/settings",
+    name: "Settings",
+    component: () => import(/* webpackChunkName: "dashboard" */ "../views/Settings.vue")
+  },
+
+  {
+    path: "/profile",
+    name: "Profile",
+    component: () => import(/* webpackChunkName: "dashboard" */ "../views/Profile.vue")
+  },
 
   // {
   //   path: "/about",
