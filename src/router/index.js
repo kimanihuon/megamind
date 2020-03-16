@@ -8,31 +8,31 @@ Vue.use(VueRouter);
 const routes = [
   {
     path: "/login",
-    name: "Login",
+    name: "login",
     component: Login
   },
 
   {
     path: "/dashboard",
-    name: "Dashboard",
+    name: "dashboard",
     component: () => import(/* webpackChunkName: "dashboard" */ "../views/Dashboard.vue")
   },
 
   {
     path: "/chat",
-    name: "Chat",
+    name: "chat",
     component: () => import(/* webpackChunkName: "dashboard" */ "../views/Chat.vue")
   },
 
   {
     path: "/settings",
-    name: "Settings",
+    name: "settings",
     component: () => import(/* webpackChunkName: "dashboard" */ "../views/Settings.vue")
   },
 
   {
     path: "/profile",
-    name: "Profile",
+    name: "profile",
     component: () => import(/* webpackChunkName: "dashboard" */ "../views/Profile.vue")
   },
 
@@ -57,30 +57,17 @@ const router = new VueRouter({
 
 router.beforeEach((to, from, next) => {
 
-  // Verify login status
-  Vue.prototype.$http.create({ withCredentials: true })
-    .post("http://localhost:5443/api/login/verify")
-    .then(response => {
-      if (response.data.authorized) {
-        store.dispatch("auth");
-        if (to.path == '/' || to.path == '/login' ) {
-          next('/dashboard')
-        } 
-        else {
-          next()
-        }
-
-      } else {
-        store.dispatch("deauth");
-        next('/login')
-      }
-    },
-      err => {
-        err
-        store.dispatch("deauth");
-        next()
-      }
-    );
+  if (store.state.auth && to.path == '/') {
+    next('/dashboard')
+  } else if (store.state.auth && to.path == '/login') {
+    next('/dashboard')
+  } else if (store.state.auth) {
+    next()
+  } else if (!store.state.auth && to.path != '/login') {
+    next('/login')
+  } else if (!store.state.auth && to.path == '/login') {
+    next()
+  }
 
 })
 

@@ -28,7 +28,7 @@
     </v-navigation-drawer>
 
     <!-- other option: clipped-left -->
-    <v-app-bar app clipped-left>
+    <v-app-bar flat app clipped-left dense>
       <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
       <v-toolbar-title>Weskool</v-toolbar-title>
     </v-app-bar>
@@ -54,10 +54,7 @@ export default {
     expandOnHover() {
       return this.$store.state.expandOnHover;
     }
-
   },
-  created() {
-    this.$vuetify.theme.dark = true;
-  }
+  created() {}
 };
 </script>

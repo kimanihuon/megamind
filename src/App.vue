@@ -4,12 +4,12 @@
     <Nav v-if="auth"></Nav>
 
     <!-- View -->
-    <v-content>
+    <v-content v-if="auth || !auth && path == '/login'" style="padding-top: 24px;">
       <router-view></router-view>
     </v-content>
 
     <!-- Footer -->
-    <v-footer app>
+    <v-footer v-if="!auth" app>
       <span>&copy; 2019</span>
     </v-footer>
   </v-app>
@@ -25,16 +25,27 @@ export default {
     Nav
   },
 
-  data: () => ({}),
+  data: () => ({
+    // Current window path
+    path: window.location.pathname
+  }),
 
   computed: {
     auth() {
+      // Whether user is logged in 
       return this.$store.state.auth;
-    }
+    },
   },
 
-  created() {
-    this.$vuetify.theme.dark = this.$store.state.darkTheme;
+  mounted() {
+    this.$vuetify.theme.dark = this.$store.state.darkMode;
   }
 };
 </script>
+
+<style lang="scss" scoped>
+.content {
+  padding: 0px 0px 0px;
+}
+
+</style>
