@@ -22,18 +22,20 @@
               <v-list subheader>
                 <v-subheader>Recent chat</v-subheader>
 
-                <v-list-item v-for="item in items" :key="item.title" @click="activate()">
+                <v-list-item v-for="(chat, idx) in chats" :key="idx" @click="activate(chat)">
                   <v-list-item-avatar size="48">
-                    <v-img :src="item.avatar"></v-img>
+                    <v-img :src="chat.avatar"></v-img>
                   </v-list-item-avatar>
 
                   <v-list-item-content>
-                    <v-list-item-title v-text="item.title" class="py-1"></v-list-item-title>
-                    <v-list-item-subtitle class="font-weight-light">{{ item.message }}</v-list-item-subtitle>
+                    <v-list-item-title v-text="chat.name" class="py-1"></v-list-item-title>
+                    <v-list-item-subtitle
+                      class="font-weight-light"
+                    >{{ chat.messages.slice(-1).pop().from == me.id ? 'me: ' + chat.messages.slice(-1).pop().contents.text : chat.messages.slice(-1).pop().contents.text }}</v-list-item-subtitle>
                   </v-list-item-content>
 
                   <v-list-item-icon>
-                    <v-icon :color="item.active ? 'deep-purple accent-4' : 'grey'">mdi-chat-outline</v-icon>
+                    <v-icon :color="chat.active ? 'deep-purple accent-4' : 'grey'">mdi-chat-outline</v-icon>
                   </v-list-item-icon>
                 </v-list-item>
               </v-list>
@@ -63,9 +65,9 @@
               <v-row no-gutters justify="start" align="center">
                 <!-- Tool bar icon -->
                 <v-avatar color="teal" size="40" class="mr-4">
-                  <v-img src="https://cdn.vuetifyjs.com/images/lists/4.jpg"></v-img>
+                  <v-img :src="selectedChat.avatar"></v-img>
                 </v-avatar>
-                <v-toolbar-title>Jimmy</v-toolbar-title>
+                <v-toolbar-title>{{ selectedChat.name }}</v-toolbar-title>
               </v-row>
 
               <v-btn icon>
@@ -76,86 +78,29 @@
             <!-- Chat layout -->
             <v-layout d-flex column class="chat-list px-3 pb-12">
               <v-list class="pb-4">
-                <!-- Single message sent -->
-                <v-row class="my-6 px-4" justify="end">
-                  <v-card class="mx-2 bubble" color="#0277BD" max-width="500" id="bubble">
-                    <v-card-subtitle
-                      class="body-2 white--text"
-                    >Lorem ipsum dolor sit amet, consectetur adipisicing elit.</v-card-subtitle>
+                <!-- Single message -->
+                <v-row
+                  v-for="(message, idx) in selectedChat.messages"
+                  :key="idx"
+                  class="my-6 px-4"
+                  :justify="message.from == me.id ? 'end' : 'start'"
+                >
+                  <v-card :class=" message.from == me.id ? 'mx-2 bubble' : 'mx-2 bubbleleft'" :color="message.from == me.id ? '#0277BD' : '#F5F5F5'" max-width="500" :id="message.from == me.id ? 'bubble' : 'bubbleleft' ">
+                    <v-card-subtitle :class=" message.from == me.id ? 'body-2 white--text' : 'body-2 black--text'">{{ message.contents.text }}</v-card-subtitle>
                   </v-card>
                 </v-row>
-                <!-- Single message received -->
-                <v-row class="my-6 px-4" justify="start">
-                  <v-card class="mx-2 bubbleleft" color="#F5F5F5" max-width="500" id="bubbleleft">
-                    <v-card-subtitle
-                      class="body-2 black--text"
-                    >Lorem ipsum dolor sit amet, consectetur adipisicing elit. Amet accusantium consequuntur blanditiis reiciendis nihil nobis sed consequatur id fugiat aliquam, mollitia adipisci, quaerat voluptates temporibus consectetur enim fugit delectus ipsam?</v-card-subtitle>
-                  </v-card>
-                </v-row>
-                <!-- Message end -->
-
-                <!-- Single message sent -->
-                <v-row class="my-6 px-4" justify="end">
-                  <v-card class="mx-2 bubble" color="#0277BD" max-width="500" id="bubble">
-                    <v-card-subtitle
-                      class="body-2 white--text"
-                    >Lorem ipsum dolor sit amet, consectetur adipisicing elit.</v-card-subtitle>
-                  </v-card>
-                </v-row>
-                <!-- Single message received -->
-                <v-row class="my-6 px-4" justify="start">
-                  <v-card class="mx-2 bubbleleft" color="#F5F5F5" max-width="500" id="bubbleleft">
-                    <v-card-subtitle
-                      class="body-2 black--text"
-                    >Lorem ipsum dolor sit amet, consectetur adipisicing elit. Amet accusantium consequuntur blanditiis reiciendis nihil nobis sed consequatur id fugiat aliquam, mollitia adipisci, quaerat voluptates temporibus consectetur enim fugit delectus ipsam?</v-card-subtitle>
-                  </v-card>
-                </v-row>
-                <!-- Message end -->
-                <!-- Single message sent -->
-                <v-row class="my-6 px-4" justify="end">
-                  <v-card class="mx-2 bubble" color="#0277BD" max-width="500" id="bubble">
-                    <v-card-subtitle
-                      class="body-2 white--text"
-                    >Lorem ipsum dolor sit amet, consectetur adipisicing elit.</v-card-subtitle>
-                  </v-card>
-                </v-row>
-                <!-- Single message received -->
-                <v-row class="my-6 px-4" justify="start">
-                  <v-card class="mx-2 bubbleleft" color="#F5F5F5" max-width="500" id="bubbleleft">
-                    <v-card-subtitle
-                      class="body-2 black--text"
-                    >Lorem ipsum dolor sit amet, consectetur adipisicing elit. Amet accusantium consequuntur blanditiis reiciendis nihil nobis sed consequatur id fugiat aliquam, mollitia adipisci, quaerat voluptates temporibus consectetur enim fugit delectus ipsam?</v-card-subtitle>
-                  </v-card>
-                </v-row>
-                <!-- Message end -->
-                <!-- Single message sent -->
-                <v-row class="my-6 px-4" justify="end">
-                  <v-card class="mx-2 bubble" color="#0277BD" max-width="500" id="bubble">
-                    <v-card-subtitle
-                      class="body-2 white--text"
-                    >Lorem ipsum dolor sit amet, consectetur adipisicing elit.</v-card-subtitle>
-                  </v-card>
-                </v-row>
-                <!-- Single message received -->
-                <v-row class="my-6 px-4" justify="start">
-                  <v-card class="mx-2 bubbleleft" color="#F5F5F5" max-width="500" id="bubbleleft">
-                    <v-card-subtitle
-                      class="body-2 black--text"
-                    >Lorem ipsum dolor sit amet, consectetur adipisicing elit. Amet accusantium consequuntur blanditiis reiciendis nihil nobis sed consequatur id fugiat aliquam, mollitia adipisci, quaerat voluptates temporibus consectetur enim fugit delectus ipsam?</v-card-subtitle>
-                  </v-card>
-                </v-row>
-                <!-- Message end -->
               </v-list>
             </v-layout>
 
             <!-- Message input -->
-            <v-row no-gutters id="message-input" >
+            <v-row no-gutters id="message-input">
               <v-card width="100%" flat class="px-4 pt-3">
                 <v-text-field placeholder="Enter message ..." rounded filled dense></v-text-field>
               </v-card>
             </v-row>
           </v-card>
         </v-col>
+
       </v-row>
     </v-card>
   </v-container>
@@ -220,11 +165,20 @@ export default {
     };
   },
   computed: {
-    //
+    chats() {
+      return this.$store.state.chat.singleChats;
+    },
+    selectedChat() {
+      return this.$store.state.chat.active;
+    },
+    me() {
+      return { id: "me" };
+    }
   },
   methods: {
-    activate() {
-      //
+    activate(chat) {
+      // console.log(chat)
+      this.$store.commit("selectChat", chat);
     }
   }
 };
@@ -288,19 +242,23 @@ $leftBubble: #f5f5f5;
   overflow: auto;
 }
 
-.list::-webkit-scrollbar, .chat-list::-webkit-scrollbar {
+.list::-webkit-scrollbar,
+.chat-list::-webkit-scrollbar {
   width: 5px;
   height: 4px;
 }
-.list::-webkit-scrollbar-track, .chat-list::-webkit-scrollbar-track {
+.list::-webkit-scrollbar-track,
+.chat-list::-webkit-scrollbar-track {
   background: #e8f0fd;
 }
 
-.list::-webkit-scrollbar-thumb, .chat-list::-webkit-scrollbar-thumb {
+.list::-webkit-scrollbar-thumb,
+.chat-list::-webkit-scrollbar-thumb {
   background: #6f6f70;
 }
 
-.list, .chat-list {
+.list,
+.chat-list {
   scrollbar-face-color: #83a5ee;
   scrollbar-track-color: #e8f0fd;
 }

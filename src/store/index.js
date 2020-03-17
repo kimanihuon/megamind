@@ -18,29 +18,135 @@ export default new Vuex.Store({
     ],
     chat: {
 
+      active: {},
+
+      // *Remember to use user ID for the 'for' and 'to' fields
       singleChats: [
         // Chat 1
         {
           id: 1,
+          from: 12,
+          name: 'Quincy Jones',
+          active: true,
+          avatar: 'https://cdn.vuetifyjs.com/images/lists/1.jpg',
           messages: [
             {
-              id: 1, to: 'James', from: { id: 1, name: 'Quincy Jones', avatar: 'https://cdn.vuetifyjs.com/images/lists/1.jpg' }, contents: [
-                { text: 'Hello', image: '', timestamp: '' }
-              ]
+              id: 1, from: 'notme', contents: { text: 'Hello', image: '', timestamp: '' }
+            },
+            {
+              id: 2, from: 'notme', contents: { text: 'Mbona haukunishow', image: '', timestamp: '' }
+            },
+            {
+              id: 2, from: 'me', contents: { text: 'Nilikuambia kitambo sana ni wewe hukuskia', image: '', timestamp: '' }
+            },
+            {
+              id: 2, from: 'notme', contents: { text: 'We uko na ufala msee', image: '', timestamp: '' }
             },
           ],
         },
         // Chat 2
         {
           id: 2,
+          from: 13,
+          active: true,
+          name: 'Ali Mwere Connors',
+          avatar: 'https://cdn.vuetifyjs.com/images/lists/2.jpg',
           messages: [
             {
-              id: 1, to: 'Michael', from: { id: 1, name: 'Havier', avatar: 'https://cdn.vuetifyjs.com/images/lists/2.jpg' }, contents: [
-                { text: 'Is vipi', image: '', timestamp: '' }
-              ]
+              id: 1, from: 'notme', contents: { text: 'Hello', image: '', timestamp: '' }
+            },
+            {
+              id: 2, from: 'notme', contents: { text: 'Vipi bro, umefanya assignment ?', image: '', timestamp: '' }
+            },
+            {
+              id: 2, from: 'me', contents: { text: 'Zi mehn, iko due lini ?', image: '', timestamp: '' }
             },
           ],
         },
+        // Chat 3
+        {
+          id: 3,
+          from: 14,
+          active: false,
+          name: 'Ran Carlson',
+          avatar: 'https://cdn.vuetifyjs.com/images/lists/3.jpg',
+          messages: [
+            {
+              id: 1, from: 'notme', contents: { text: 'Hello', image: '', timestamp: '' }
+            },
+            {
+              id: 2, from: 'notme', contents: { text: 'Wacha kuniignore bro', image: '', timestamp: '' }
+            },
+            {
+              id: 2, from: 'notme', contents: { text: 'Yow?', image: '', timestamp: '' }
+            },
+          ],
+        },
+        // Chat 4
+        {
+          id: 4,
+          from: 14,
+          active: true,
+          name: 'Renee Carlson',
+          avatar: 'https://cdn.vuetifyjs.com/images/lists/4.jpg',
+          messages: [
+            {
+              id: 1, from: 'me', contents: { text: 'Hello', image: '', timestamp: '' }
+            },
+            {
+              id: 2, from: 'me', contents: { text: 'I am so in love with you', image: '', timestamp: '' }
+            },
+            {
+              id: 2, from: 'me', contents: { text: 'Nimekufanyia homework', image: '', timestamp: '' }
+            },
+          ],
+        },
+        // Chat 5
+        {
+          id: 5,
+          from: 15,
+          active: true,
+          name: 'Quincy Marley',
+          avatar: 'https://cdn.vuetifyjs.com/images/lists/3.jpg',
+          messages: [
+            {
+              id: 1, from: 'notme', contents: { text: 'Hi Quincy', image: '', timestamp: '' }
+            },
+            {
+              id: 2, from: 'notme', contents: { text: "I won't make it today, did you record the notes ?", image: '', timestamp: '' }
+            },
+            {
+              id: 2, from: 'me', contents: { text: 'Mbona haukunishow', image: '', timestamp: '' }
+            },
+          ],
+        },
+        // Chat 6
+        {
+          id: 6,
+          from: 16,
+          active: false,
+          name: 'Travis Howard',
+          avatar: 'https://cdn.vuetifyjs.com/images/lists/2.jpg',
+          messages: [
+            {
+              id: 1, from: 'notme', contents: { text: 'Hello', image: '', timestamp: '' }
+            }
+          ],
+        },
+        // Chat 7
+        {
+          id: 7,
+          from: 18,
+          active: true,
+          name: 'Cindy Baker',
+          avatar: 'https://cdn.vuetifyjs.com/images/lists/5.jpg',
+          messages: [
+            {
+              id: 2, from: 'me', contents: { text: 'The lec wants to see us in room 4', image: '', timestamp: '' }
+            },
+          ],
+        },
+
       ],
 
       groupChats: [
@@ -148,6 +254,10 @@ export default new Vuex.Store({
     switchDark(state) {
       state.darkMode = !state.darkMode;
     },
+    // Chat view
+    selectChat(state, chat) {
+      state.chat.active = chat;
+    }
   },
   actions: {
     auth(context) {
