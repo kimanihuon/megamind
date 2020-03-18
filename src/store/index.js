@@ -7,6 +7,7 @@ export default new Vuex.Store({
   strict: true,
   state: {
     auth: false,
+    self: { id: "me", username: "", email: "" },
     darkMode: true,
     miniDrawer: false,
     expandOnHover: false,
@@ -18,7 +19,8 @@ export default new Vuex.Store({
     ],
     chat: {
 
-      active: {},
+      // Index of current active chat
+      chatIndex: null,
 
       // *Remember to use user ID for the 'for' and 'to' fields
       singleChats: [
@@ -29,6 +31,7 @@ export default new Vuex.Store({
           name: 'Quincy Jones',
           active: true,
           avatar: 'https://cdn.vuetifyjs.com/images/lists/1.jpg',
+          messageStructure: { from: null, contents: { text: null, image: null, timestamp: null } },
           messages: [
             {
               id: 1, from: 'notme', contents: { text: 'Hello', image: '', timestamp: '' }
@@ -51,6 +54,7 @@ export default new Vuex.Store({
           active: true,
           name: 'Ali Mwere Connors',
           avatar: 'https://cdn.vuetifyjs.com/images/lists/2.jpg',
+          messageStructure: { from: null, contents: { text: null, image: "", timestamp: "" } },
           messages: [
             {
               id: 1, from: 'notme', contents: { text: 'Hello', image: '', timestamp: '' }
@@ -70,6 +74,7 @@ export default new Vuex.Store({
           active: false,
           name: 'Ran Carlson',
           avatar: 'https://cdn.vuetifyjs.com/images/lists/3.jpg',
+          messageStructure: { from: null, contents: { text: null, image: "", timestamp: "" } },
           messages: [
             {
               id: 1, from: 'notme', contents: { text: 'Hello', image: '', timestamp: '' }
@@ -89,6 +94,7 @@ export default new Vuex.Store({
           active: true,
           name: 'Renee Carlson',
           avatar: 'https://cdn.vuetifyjs.com/images/lists/4.jpg',
+          messageStructure: { from: null, contents: { text: null, image: "", timestamp: "" } },
           messages: [
             {
               id: 1, from: 'me', contents: { text: 'Hello', image: '', timestamp: '' }
@@ -108,6 +114,7 @@ export default new Vuex.Store({
           active: true,
           name: 'Quincy Marley',
           avatar: 'https://cdn.vuetifyjs.com/images/lists/3.jpg',
+          messageStructure: { from: null, contents: { text: null, image: "", timestamp: "" } },
           messages: [
             {
               id: 1, from: 'notme', contents: { text: 'Hi Quincy', image: '', timestamp: '' }
@@ -127,6 +134,7 @@ export default new Vuex.Store({
           active: false,
           name: 'Travis Howard',
           avatar: 'https://cdn.vuetifyjs.com/images/lists/2.jpg',
+          messageStructure: { from: null, contents: { text: null, image: "", timestamp: "" } },
           messages: [
             {
               id: 1, from: 'notme', contents: { text: 'Hello', image: '', timestamp: '' }
@@ -140,6 +148,7 @@ export default new Vuex.Store({
           active: true,
           name: 'Cindy Baker',
           avatar: 'https://cdn.vuetifyjs.com/images/lists/5.jpg',
+          messageStructure: { from: null, contents: { text: null, image: "", timestamp: "" } },
           messages: [
             {
               id: 2, from: 'me', contents: { text: 'The lec wants to see us in room 4', image: '', timestamp: '' }
@@ -255,9 +264,38 @@ export default new Vuex.Store({
       state.darkMode = !state.darkMode;
     },
     // Chat view
-    selectChat(state, chat) {
-      state.chat.active = chat;
+    selectChat(state, idx) {
+      state.chat.chatIndex = idx;
+    },
+    // Insert message to the existing list of messages
+    insertMessage(state) {
+      var idx = state.chat.chatIndex;
+      // Chat that we want to change
+      var chat = state.chat.singleChats[idx];
+
+      // Set necessary variables
+      chat.messageStructure.from = state.self.id
+      chat.messageStructure.contents.timestamp = Date.now();
+
+      // Function to duplicate the object
+      function duplicate (object) {
+        let newObject = JSON.parse(JSON.stringify(object));
+        return newObject;
+      }
+
+      // Duplicate and update messages
+      chat.messages.push(duplicate(chat.messageStructure));
+
+      // Empty the text box
+      chat.messageStructure.contents.text = null;
+    },
+
+    // Bind message text input to chat
+    updateMessage(state, payload) {
+      state.chat.singleChats[state.chat.chatIndex].messageStructure.contents.text = payload.value
+      state.chat.singleChats[state.chat.chatIndex].messageStructure.from = payload.sender
     }
+
   },
   actions: {
     auth(context) {

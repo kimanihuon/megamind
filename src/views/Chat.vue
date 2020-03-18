@@ -20,9 +20,9 @@
 
             <v-layout d-flex column class="list">
               <v-list subheader>
-                <v-subheader>Recent chat</v-subheader>
+                <v-subheader>Single chats</v-subheader>
 
-                <v-list-item v-for="(chat, idx) in chats" :key="idx" @click="activate(chat)">
+                <v-list-item v-for="(chat, idx) in chats" :key="idx" @click="activate(idx)">
                   <v-list-item-avatar size="48">
                     <v-img :src="chat.avatar"></v-img>
                   </v-list-item-avatar>
@@ -37,20 +37,6 @@
                   <v-list-item-icon>
                     <v-icon :color="chat.active ? 'deep-purple accent-4' : 'grey'">mdi-chat-outline</v-icon>
                   </v-list-item-icon>
-                </v-list-item>
-              </v-list>
-
-              <v-list subheader>
-                <v-subheader>Previous chats</v-subheader>
-
-                <v-list-item v-for="item in items2" :key="item.title" @click="activate()">
-                  <v-list-item-avatar>
-                    <v-img :src="item.avatar"></v-img>
-                  </v-list-item-avatar>
-
-                  <v-list-item-content>
-                    <v-list-item-title v-text="item.title"></v-list-item-title>
-                  </v-list-item-content>
                 </v-list-item>
               </v-list>
             </v-layout>
@@ -85,8 +71,15 @@
                   class="my-6 px-4"
                   :justify="message.from == me.id ? 'end' : 'start'"
                 >
-                  <v-card :class=" message.from == me.id ? 'mx-2 bubble' : 'mx-2 bubbleleft'" :color="message.from == me.id ? '#0277BD' : '#F5F5F5'" max-width="500" :id="message.from == me.id ? 'bubble' : 'bubbleleft' ">
-                    <v-card-subtitle :class=" message.from == me.id ? 'body-2 white--text' : 'body-2 black--text'">{{ message.contents.text }}</v-card-subtitle>
+                  <v-card
+                    :class=" message.from == me.id ? 'mx-2 bubble' : 'mx-2 bubbleleft'"
+                    :color="message.from == me.id ? '#0277BD' : '#F5F5F5'"
+                    max-width="500"
+                    :id="message.from == me.id ? 'bubble' : 'bubbleleft' "
+                  >
+                    <v-card-subtitle
+                      :class=" message.from == me.id ? 'body-2 white--text' : 'body-2 black--text'"
+                    >{{ message.contents.text }}</v-card-subtitle>
                   </v-card>
                 </v-row>
               </v-list>
@@ -94,13 +87,19 @@
 
             <!-- Message input -->
             <v-row no-gutters id="message-input">
-              <v-card width="100%" flat class="px-4 pt-3">
-                <v-text-field placeholder="Enter message ..." rounded filled dense></v-text-field>
+              <v-card v-if="selectedChat.id !== undefined" width="100%" flat class="px-4 pt-3">
+                <v-text-field
+                  v-model="messageInput"
+                  placeholder="Enter message ..."
+                  rounded
+                  filled
+                  dense
+                  @keyup.enter.native="send()"
+                ></v-text-field>
               </v-card>
             </v-row>
           </v-card>
         </v-col>
-
       </v-row>
     </v-card>
   </v-container>
@@ -109,59 +108,11 @@
 export default {
   data() {
     return {
-      drawer: true,
-      items: [
-        {
-          active: true,
-          title: "Jason Oner",
-          message: "Change your Google+ profile photo",
-          avatar: "https://cdn.vuetifyjs.com/images/lists/1.jpg"
-        },
-        {
-          active: true,
-          title: "Ranee Carlson",
-          message: "Mbona unakua ivo kweni tuliongea aje",
-          avatar: "https://cdn.vuetifyjs.com/images/lists/2.jpg"
-        },
-        {
-          title: "Cindy Baker",
-          message: "I have the report you asked for kuja na dow ya kuprint",
-          avatar: "https://cdn.vuetifyjs.com/images/lists/3.jpg"
-        },
-        {
-          title: "Ali Connors",
-          message: "Itakuaje",
-          avatar: "https://cdn.vuetifyjs.com/images/lists/4.jpg"
-        },
-        {
-          title: "Ali Mwere Connors",
-          message: "Itakuaje",
-          avatar: "https://cdn.vuetifyjs.com/images/lists/4.jpg"
-        },
-        {
-          active: true,
-          title: "Ran Carlson",
-          message: "Mbona unakua ivo kweni tuliongea aje",
-          avatar: "https://cdn.vuetifyjs.com/images/lists/2.jpg"
-        },
-        {
-          active: true,
-          title: "Renee Carlson",
-          message: "Mbona unakua ivo kweni tuliongea aje",
-          avatar: "https://cdn.vuetifyjs.com/images/lists/2.jpg"
-        }
-      ],
-      items2: [
-        {
-          title: "Travis Howard",
-          message: "",
-          avatar: "https://cdn.vuetifyjs.com/images/lists/5.jpg"
-        }
-      ],
-      right: true,
-      miniVariant: false,
-      expandOnHover: false,
-      background: false
+      message: {
+        from: null,
+        contents: { text: null, image: "", timestamp: "" }
+      },
+      valid: true
     };
   },
   computed: {
@@ -169,16 +120,56 @@ export default {
       return this.$store.state.chat.singleChats;
     },
     selectedChat() {
-      return this.$store.state.chat.active;
+      var idx = this.$store.state.chat.chatIndex;
+      // If message has been selected
+      if (idx !== null) {
+        return this.$store.state.chat.singleChats[idx];
+      }
+      // else return empty object
+      return {};
+    },
+    messageInput: {
+      set(value) {
+        //   commit mutation. Change value
+        this.$store.commit("updateMessage", {
+          value: value,
+          sender: this.me.id
+        });
+      },
+      get() {
+        return this.selectedChat.messageStructure.contents.text;
+      }
     },
     me() {
-      return { id: "me" };
+      return this.$store.state.self;
     }
   },
   methods: {
-    activate(chat) {
-      // console.log(chat)
-      this.$store.commit("selectChat", chat);
+    activate(idx) {
+      // Set the index of the chat we want to display
+      this.$store.commit("selectChat", idx);
+    },
+    send() {
+      var message = this.$store.state.chat.singleChats[
+        this.$store.state.chat.chatIndex
+      ].messageStructure;
+
+      // chat index
+      if (message.contents.text !== null) {
+        // Temporarily store the message to trim()
+        var temp = message.contents.text;
+        temp = temp.trim()
+        if (temp.length > 0) {
+          //
+          // *TODO: Api call to send message
+          // *TODO: If successful:
+          // Insert message and clear
+          this.$store.commit("insertMessage");
+        }
+      }
+    },
+    log(payload) {
+      console.log(payload);
     }
   }
 };
