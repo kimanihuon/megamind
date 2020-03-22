@@ -30,6 +30,7 @@ export default new Vuex.Store({
           from: 12,
           name: 'Quincy Jones',
           active: true,
+          participants: [12, 1],
           avatar: 'https://cdn.vuetifyjs.com/images/lists/1.jpg',
           messageStructure: { from: null, contents: { text: null, image: null, timestamp: null } },
           messages: [
