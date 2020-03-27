@@ -168,8 +168,10 @@ export default {
             instance.requestResponse = response.data.message;
 
             if (response.data.success) {
+              // console.log(response.data.user)
               instance.$store.dispatch("auth");
-              router.push({ name: "Dashboard" });
+              instance.$store.commit("setUserDetails", response.data.user);
+              router.push({ name: "dashboard" });
             }
 
             // console.log(response);
@@ -211,8 +213,12 @@ export default {
             instance.requestResponse = response.data.message;
 
             if (response.data.success) {
+
+              // console.log(response.data.user)
+
               instance.$store.dispatch("auth");
-              router.push({ name: "Dashboard" });
+              instance.$store.commit("setUserDetails", response.data.user);
+              router.push({ name: "dashboard" });
             }
             // console.log(response);
           },

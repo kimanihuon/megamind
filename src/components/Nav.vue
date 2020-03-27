@@ -22,7 +22,7 @@
 
       <template v-slot:append>
         <div class="pa-2">
-          <v-btn block outlined>Logout</v-btn>
+          <v-btn block outlined @click="logout()">Logout</v-btn>
         </div>
       </template>
     </v-navigation-drawer>
@@ -44,6 +44,35 @@ export default {
       drawer: null
     };
   },
+
+  methods: {
+    logout() {
+
+      var instance = this;
+
+      this.$http
+        .create({ withCredentials: true })
+        .post("http://localhost:5443/api/logout")
+        .then(function(response) {
+          if (response.data.success === true) {
+            instance.$store.dispatch("deauth");
+            instance.$router.push({ name: "login" });
+          } else {
+            window.alert(
+              "Cannot logout, server configuration error. Try clearing your cookies"
+            );
+          }
+        })
+        .catch(function(error) {
+          // console.log(error)
+          error;
+          window.alert(
+            "Cannot logout, Browser error. Try clearing your cookies instead"
+          );
+        });
+    }
+  },
+
   computed: {
     pages() {
       return this.$store.state.pages;

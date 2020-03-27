@@ -7,7 +7,7 @@ export default new Vuex.Store({
   strict: true,
   state: {
     auth: false,
-    self: { id: "me", username: "", email: "" },
+    self: {},
     darkMode: true,
     miniDrawer: false,
     expandOnHover: false,
@@ -21,6 +21,21 @@ export default new Vuex.Store({
 
       // Index of current active chat
       chatIndex: null,
+      
+      // Default chat structure
+      struct: {
+        messageStructure: { from: null, contents: { text: "", image: [], timestamp: "" } },
+        participants: [],
+        messages: [
+          {
+            receipient: "", contents: { text: "", image: [], timestamp: "" }
+          }
+        ]
+      },
+
+      single: [
+        
+      ],
 
       // *Remember to use user ID for the 'for' and 'to' fields
       singleChats: [
@@ -255,6 +270,9 @@ export default new Vuex.Store({
     deauthenticate(state) {
       state.auth = false;
     },
+    setUserDetails(state, payload) {
+      state.self = payload
+    },
     switchMini(state) {
       state.miniDrawer = !state.miniDrawer;
     },
@@ -279,7 +297,7 @@ export default new Vuex.Store({
       chat.messageStructure.contents.timestamp = Date.now();
 
       // Function to duplicate the object
-      function duplicate (object) {
+      function duplicate(object) {
         let newObject = JSON.parse(JSON.stringify(object));
         return newObject;
       }

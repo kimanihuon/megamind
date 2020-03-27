@@ -9,14 +9,24 @@ import axios from "axios";
 Vue.prototype.$http = axios;
 Vue.config.productionTip = false;
 
+// The requested pathname by the user
+var requested = window.location.pathname;
+
 // Verify login status
 Vue.prototype.$http.create({ withCredentials: true })
   .post("http://localhost:5443/api/login/verify")
   .then(response => {
     // console.log(response)
     if (response.data.authorized) {
+
+      store.commit("setUserDetails", response.data.details);
       store.dispatch("auth");
-      router.push({ name: 'dashboard' })
+
+      if (requested == "/login") {
+        router.push({ path: `/dashboard` })
+      } else {
+        router.push({ path: `${requested}` })
+      }
     } else {
       store.dispatch("deauth");
     }
@@ -25,7 +35,6 @@ Vue.prototype.$http.create({ withCredentials: true })
     store.dispatch("deauth");
     // handle error
     console.log(error);
-
   })
 
 new Vue({

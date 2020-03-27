@@ -10,6 +10,13 @@ export default {
     return {
       drawer: null
     };
+  },
+
+  mounted() {
+    console.log(
+      // this.$store.state.self
+    )
   }
+
 };
 </script>

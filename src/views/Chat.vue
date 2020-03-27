@@ -9,7 +9,8 @@
           <v-card>
             <!-- Toolbar -->
             <v-app-bar color="purple" dense dark>
-              <v-toolbar-title>Topics</v-toolbar-title>
+              <!-- The hide details removes the extra space taken at the bottom for error display -->
+              <v-text-field prepend-inner-icon="mdi-magnify" hide-details outlined rounded filled dense clearable></v-text-field>
 
               <v-spacer></v-spacer>
 
@@ -158,13 +159,18 @@ export default {
       if (message.contents.text !== null) {
         // Temporarily store the message to trim()
         var temp = message.contents.text;
-        temp = temp.trim()
+        temp = temp.trim();
         if (temp.length > 0) {
           //
           // *TODO: Api call to send message
           // *TODO: If successful:
+
           // Insert message and clear
           this.$store.commit("insertMessage");
+
+          this.$http
+            .create({ withCredentials: true })
+            .post("http://localhost:5443/api/send", {});
         }
       }
     },
