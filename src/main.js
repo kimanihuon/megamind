@@ -4,6 +4,7 @@ import router from "./router";
 import store from "./store";
 import vuetify from "./plugins/vuetify";
 import axios from "axios";
+import io from "socket.io-client";
 
 // Add axios to the global object
 Vue.prototype.$http = axios;
@@ -21,6 +22,8 @@ Vue.prototype.$http.create({ withCredentials: true })
 
       store.commit("setUserDetails", response.data.details);
       store.dispatch("auth");
+      // Websocket
+      Vue.prototype.$socket = io.connect("http://localhost:5443");
 
       if (requested == "/login") {
         router.push({ path: `/dashboard` })

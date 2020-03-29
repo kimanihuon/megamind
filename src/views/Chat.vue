@@ -9,8 +9,52 @@
           <v-card>
             <!-- Toolbar -->
             <v-app-bar color="purple" dense dark>
-              <!-- The hide details removes the extra space taken at the bottom for error display -->
-              <v-text-field prepend-inner-icon="mdi-magnify" hide-details outlined rounded filled dense clearable></v-text-field>
+              <!-- Pop down menu -->
+              <v-menu v-model="menu" :close-on-content-click="false" :nudge-width="0" offset-y>
+                <template v-slot:activator="{ on }">
+                  <!-- The hide details removes the extra space taken at the bottom for error display -->
+                  <v-text-field
+                    aria-autocomplete="off"
+                    autocomplete="off"
+                    v-on="on"
+                    prepend-inner-icon="mdi-magnify"
+                    hide-details
+                    outlined
+                    filled
+                    dense
+                    clearable
+                    v-model="searchTerm"
+                    :maxlength="maxInput"
+                    @input="input()"
+                  ></v-text-field>
+                </template>
+
+                <!-- Search user list -->
+                <v-card max-width="300">
+                  <v-card-subtitle
+                    v-if="searchResults.length < 1"
+                    class="text-center"
+                  >No results</v-card-subtitle>
+                  <v-list v-if="searchResults.length > 0">
+                    <v-list-item v-for="(result, idx) in searchResults" :key="idx" @click="selectUser(result)">
+                      <v-list-item-avatar>
+                        <img src="https://cdn.vuetifyjs.com/images/john.jpg" alt="John" />
+                      </v-list-item-avatar>
+
+                      <v-list-item-content>
+                        <v-list-item-title v-if="typeof result.name !== 'undefined'">{{ result.name }}</v-list-item-title>
+                        <v-list-item-subtitle>{{ result.username }}</v-list-item-subtitle>
+                      </v-list-item-content>
+
+                      <v-list-item-action>
+                        <v-btn :class="'green--text'" icon>
+                          <v-icon>mdi-emoticon-happy-outline</v-icon>
+                        </v-btn>
+                      </v-list-item-action>
+                    </v-list-item>
+                  </v-list>
+                </v-card>
+              </v-menu>
 
               <v-spacer></v-spacer>
 
@@ -19,6 +63,7 @@
               </v-btn>
             </v-app-bar>
 
+            <!-- Chats list layout -->
             <v-layout d-flex column class="list">
               <v-list subheader>
                 <v-subheader>Single chats</v-subheader>
@@ -106,13 +151,25 @@
   </v-container>
 </template>
 <script>
+// socket.on("response", function(data) {
+//   console.log(data);
+// });
+
 export default {
   data() {
     return {
-      message: {
+      socket: this.$socket,
+      fav: true,
+      menu: false,
+      message: false,
+      hints: true,
+      messageq: {
         from: null,
         contents: { text: null, image: "", timestamp: "" }
       },
+      searchTerm: null,
+      maxInput: 16,
+      waiting: false,
       valid: true
     };
   },
@@ -128,6 +185,9 @@ export default {
       }
       // else return empty object
       return {};
+    },
+    searchResults(){
+      return this.$store.state.searchResults;
     },
     messageInput: {
       set(value) {
@@ -146,6 +206,25 @@ export default {
     }
   },
   methods: {
+    selectUser(user){
+      var chats = this.$store.state.self.chats;
+      var found = false;
+
+      // Check whether the selected user already has an existing chat
+      for (let i = 0; i < chats.length; i++) {
+        const chat = chats[i];
+        if (chat.participants[1] == user._id) {
+          this.$store.commit("selectChat", user);
+          found = true;
+          break;
+        }
+      }
+
+      if (!found) {
+        this.$store.commit("makeActive", user);
+      }
+
+    },
     activate(idx) {
       // Set the index of the chat we want to display
       this.$store.commit("selectChat", idx);
@@ -174,9 +253,31 @@ export default {
         }
       }
     },
-    log(payload) {
-      console.log(payload);
+    log() {
+      console.log('ended');
+    },
+    input() {
+      var input = this.searchTerm;
+
+      if (!this.waiting) {
+        if (input !== null) {
+          input = input.trim();
+          if (input.length > 0) {
+            this.socket.emit("input", {
+              input: input
+            });
+          }
+        }
+      }
     }
+  },
+  created() {
+    var socket = this.socket;
+    var instance = this;
+    socket.on("response", function(data) {
+      instance.$store.commit("insertResults", data)
+      // console.log(instance.$store.state.searchResults);
+    });
   }
 };
 </script>

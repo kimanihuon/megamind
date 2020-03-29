@@ -7,6 +7,7 @@ export default new Vuex.Store({
   strict: true,
   state: {
     auth: false,
+    searchResults: [],
     self: {},
     darkMode: true,
     miniDrawer: false,
@@ -21,10 +22,15 @@ export default new Vuex.Store({
 
       // Index of current active chat
       chatIndex: null,
+
+      // Active chat
+      activeChat: {},
       
       // Default chat structure
       struct: {
         messageStructure: { from: null, contents: { text: "", image: [], timestamp: "" } },
+        receipientUsername: '',
+        avatar: '',
         participants: [],
         messages: [
           {
@@ -32,10 +38,6 @@ export default new Vuex.Store({
           }
         ]
       },
-
-      single: [
-        
-      ],
 
       // *Remember to use user ID for the 'for' and 'to' fields
       singleChats: [
@@ -313,6 +315,25 @@ export default new Vuex.Store({
     updateMessage(state, payload) {
       state.chat.singleChats[state.chat.chatIndex].messageStructure.contents.text = payload.value
       state.chat.singleChats[state.chat.chatIndex].messageStructure.from = payload.sender
+    },
+
+    // Search results for search as you type
+    insertResults(state, payload){
+      state.searchResults = [...payload]
+    },
+
+    // Make non-existent chat active
+    makeActive(state, payload){
+
+      // Duplicate the object
+      var structure = JSON.parse(JSON.stringify(state.chat.struct))
+      structure.from = state.self._id;
+      structure.receipientUsername = payload.username;
+      structure.avatar = payload.avatar;
+      structure.messages = []
+
+      // update active chat object
+      state.activeChat = structure;
     }
 
   },

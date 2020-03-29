@@ -14,7 +14,7 @@ export default {
 
   mounted() {
     console.log(
-      // this.$store.state.self
+      this.$store.state.self
     )
   }
 
