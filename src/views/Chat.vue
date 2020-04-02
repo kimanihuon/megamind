@@ -78,6 +78,8 @@
 
                   <v-list-item-content>
                     <v-list-item-title v-text="chat.participants[1].username" class="py-1"></v-list-item-title>
+
+                    <!-- Display Latest message snippet by popping th latest message from the array -->
                     <v-list-item-subtitle
                       class="font-weight-light"
                     >{{ chat.messages.slice(-1).pop().from == self._id ? 'me: ' + chat.messages.slice(-1).pop().contents.text : chat.messages.slice(-1).pop().contents.text }}</v-list-item-subtitle>
@@ -216,9 +218,9 @@ export default {
 
       // Check whether the selected user already has an existing chat
       for (let i = 0; i < chats.length; i++) {
-        const chat = chats[i];
-        if (chat.participants[1] == user._id) {
-          this.$store.commit("selectChat", user);
+        var chat = chats[i];
+        if (chat.participants[1]._id == user._id) {
+          this.$store.commit("selectChat", i);
           found = true;
           break;
         }
@@ -244,8 +246,14 @@ export default {
         if (temp.length > 0) {
           // Check if it's an existing chat
           if (message._id) {
-            this.$store.commit("insertTimestamp")
-            
+
+            this.$store.commit("insertTimestamp");
+            var messageObj = JSON.parse(JSON.stringify(instance.$store.state.chat.activeChat));
+            delete messageObj.messages
+            delete messageObj.messageStructure._id
+            delete messageObj.messageStructure.contents._id
+            this.socket.emit("send", messageObj);
+
           } else {
             this.$store.commit("insertTimestamp");
             this.socket.emit("send", instance.$store.state.chat.activeChat);
@@ -287,8 +295,10 @@ export default {
     });
 
     socket.on("sentResponse", function(response) {
-      if (response.success === true) {
+      if (response.success === true && response.type == "new") {
         instance.$store.commit("createChat", response.data);
+      } else if (response.success === true && response.type == "existing") {
+        instance.$store.commit("updateChat", response.data);
       }
     });
   }

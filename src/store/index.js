@@ -345,13 +345,23 @@ export default new Vuex.Store({
       // Length the chats array
       let len = state.self.chats.length
       // len - 1 = to the index of the last chat
-      state.chat.activeChat = state.self.chats[len - 1]
+      state.chat.activeChat = state.self.chats[len - 1];
+      state.chat.chatIndex = len - 1
 
       // Clear active chat contents
       state.chat.activeChat.messageStructure.contents.text = '';
       state.chat.activeChat.messageStructure.contents.images = [];
       state.chat.activeChat.messageStructure.contents.timestamp = '';
 
+    },
+
+    updateChat(state, payload) {
+      state.self.chats[state.chat.chatIndex].messages.push(payload);
+      
+      // Clear active chat contents
+      state.chat.activeChat.messageStructure.contents.text = '';
+      state.chat.activeChat.messageStructure.contents.images = [];
+      state.chat.activeChat.messageStructure.contents.timestamp = '';
     }
 
   },
