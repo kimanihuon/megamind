@@ -10,7 +10,7 @@
             <!-- Toolbar -->
             <v-app-bar color="purple" dense dark>
               <!-- Pop down menu -->
-              <v-menu v-model="menu" :close-on-content-click="false" :nudge-width="0" offset-y>
+              <v-menu v-model="menu" :close-on-content-click="true" :nudge-width="0" offset-y>
                 <template v-slot:activator="{ on }">
                   <!-- The hide details removes the extra space taken at the bottom for error display -->
                   <v-text-field
@@ -31,18 +31,21 @@
 
                 <!-- Search user list -->
                 <v-card max-width="300">
-                  <v-card-subtitle
-                    v-if="searchResults.length < 1"
-                    class="text-center"
-                  >No results</v-card-subtitle>
+                  <v-card-subtitle v-if="searchResults.length < 1" class="text-center">No results</v-card-subtitle>
                   <v-list v-if="searchResults.length > 0">
-                    <v-list-item v-for="(result, idx) in searchResults" :key="idx" @click="selectUser(result)">
+                    <v-list-item
+                      v-for="(result, idx) in searchResults"
+                      :key="idx"
+                      @click="selectUser(result)"
+                    >
                       <v-list-item-avatar>
-                        <img src="https://cdn.vuetifyjs.com/images/john.jpg" alt="John" />
+                        <img :src="result.avatar" alt="John" />
                       </v-list-item-avatar>
 
                       <v-list-item-content>
-                        <v-list-item-title v-if="typeof result.name !== 'undefined'">{{ result.name }}</v-list-item-title>
+                        <v-list-item-title
+                          v-if="typeof result.name !== 'undefined'"
+                        >{{ result.name }}</v-list-item-title>
                         <v-list-item-subtitle>{{ result.username }}</v-list-item-subtitle>
                       </v-list-item-content>
 
@@ -70,14 +73,14 @@
 
                 <v-list-item v-for="(chat, idx) in chats" :key="idx" @click="activate(idx)">
                   <v-list-item-avatar size="48">
-                    <v-img :src="chat.avatar"></v-img>
+                    <v-img :src="chat.participants[1].avatar"></v-img>
                   </v-list-item-avatar>
 
                   <v-list-item-content>
-                    <v-list-item-title v-text="chat.name" class="py-1"></v-list-item-title>
+                    <v-list-item-title v-text="chat.participants[1].username" class="py-1"></v-list-item-title>
                     <v-list-item-subtitle
                       class="font-weight-light"
-                    >{{ chat.messages.slice(-1).pop().from == me.id ? 'me: ' + chat.messages.slice(-1).pop().contents.text : chat.messages.slice(-1).pop().contents.text }}</v-list-item-subtitle>
+                    >{{ chat.messages.slice(-1).pop().from == self._id ? 'me: ' + chat.messages.slice(-1).pop().contents.text : chat.messages.slice(-1).pop().contents.text }}</v-list-item-subtitle>
                   </v-list-item-content>
 
                   <v-list-item-icon>
@@ -91,15 +94,15 @@
 
         <!-- Chat side -->
         <v-col cols="8">
-          <v-card class="chat">
+          <v-card v-if="typeof activeChat.participants !== 'undefined'" class="chat">
             <!-- Toolbar -->
             <v-toolbar color dense>
               <v-row no-gutters justify="start" align="center">
                 <!-- Tool bar icon -->
                 <v-avatar color="teal" size="40" class="mr-4">
-                  <v-img :src="selectedChat.avatar"></v-img>
+                  <v-img :src="activeChat.participants[1].avatar"></v-img>
                 </v-avatar>
-                <v-toolbar-title>{{ selectedChat.name }}</v-toolbar-title>
+                <v-toolbar-title>{{ activeChat.participants[1].username }}</v-toolbar-title>
               </v-row>
 
               <v-btn icon>
@@ -112,19 +115,19 @@
               <v-list class="pb-4">
                 <!-- Single message -->
                 <v-row
-                  v-for="(message, idx) in selectedChat.messages"
+                  v-for="(message, idx) in activeChat.messages"
                   :key="idx"
                   class="my-6 px-4"
-                  :justify="message.from == me.id ? 'end' : 'start'"
+                  :justify="message.from == self._id ? 'end' : 'start'"
                 >
                   <v-card
-                    :class=" message.from == me.id ? 'mx-2 bubble' : 'mx-2 bubbleleft'"
-                    :color="message.from == me.id ? '#0277BD' : '#F5F5F5'"
+                    :class=" message.from == self._id ? 'mx-2 bubble' : 'mx-2 bubbleleft'"
+                    :color="message.from == self._id ? '#0277BD' : '#F5F5F5'"
                     max-width="500"
-                    :id="message.from == me.id ? 'bubble' : 'bubbleleft' "
+                    :id="message.from == self._id ? 'bubble' : 'bubbleleft' "
                   >
                     <v-card-subtitle
-                      :class=" message.from == me.id ? 'body-2 white--text' : 'body-2 black--text'"
+                      :class=" message.from == self._id ? 'body-2 white--text' : 'body-2 black--text'"
                     >{{ message.contents.text }}</v-card-subtitle>
                   </v-card>
                 </v-row>
@@ -133,10 +136,11 @@
 
             <!-- Message input -->
             <v-row no-gutters id="message-input">
-              <v-card v-if="selectedChat.id !== undefined" width="100%" flat class="px-4 pt-3">
+              <v-card width="100%" flat class="px-4 py-3">
                 <v-text-field
                   v-model="messageInput"
                   placeholder="Enter message ..."
+                  hide-details
                   rounded
                   filled
                   dense
@@ -158,47 +162,47 @@
 export default {
   data() {
     return {
+      newChat: false,
       socket: this.$socket,
       fav: true,
       menu: false,
       message: false,
       hints: true,
-      messageq: {
-        from: null,
-        contents: { text: null, image: "", timestamp: "" }
-      },
       searchTerm: null,
       maxInput: 16,
       waiting: false,
-      valid: true
+      valid: true,
+      self: this.$store.state.self
     };
   },
   computed: {
     chats() {
-      return this.$store.state.chat.singleChats;
+      return this.$store.state.self.chats;
+    },
+    activeChat() {
+      return this.$store.state.chat.activeChat;
     },
     selectedChat() {
       var idx = this.$store.state.chat.chatIndex;
       // If message has been selected
       if (idx !== null) {
-        return this.$store.state.chat.singleChats[idx];
+        return this.$store.state.self.chats[idx];
       }
       // else return empty object
       return {};
     },
-    searchResults(){
+    searchResults() {
       return this.$store.state.searchResults;
     },
     messageInput: {
       set(value) {
-        //   commit mutation. Change value
+        // commit mutation. Change value
         this.$store.commit("updateMessage", {
-          value: value,
-          sender: this.me.id
+          value: value
         });
       },
       get() {
-        return this.selectedChat.messageStructure.contents.text;
+        return this.activeChat.messageStructure.contents.text;
       }
     },
     me() {
@@ -206,7 +210,7 @@ export default {
     }
   },
   methods: {
-    selectUser(user){
+    selectUser(user) {
       var chats = this.$store.state.self.chats;
       var found = false;
 
@@ -223,16 +227,14 @@ export default {
       if (!found) {
         this.$store.commit("makeActive", user);
       }
-
     },
     activate(idx) {
       // Set the index of the chat we want to display
       this.$store.commit("selectChat", idx);
     },
     send() {
-      var message = this.$store.state.chat.singleChats[
-        this.$store.state.chat.chatIndex
-      ].messageStructure;
+      var message = this.$store.state.chat.activeChat.messageStructure;
+      var instance = this;
 
       // chat index
       if (message.contents.text !== null) {
@@ -240,21 +242,26 @@ export default {
         var temp = message.contents.text;
         temp = temp.trim();
         if (temp.length > 0) {
-          //
-          // *TODO: Api call to send message
-          // *TODO: If successful:
+          // Check if it's an existing chat
+          if (message._id) {
+            this.$store.commit("insertTimestamp")
+            
+          } else {
+            this.$store.commit("insertTimestamp");
+            this.socket.emit("send", instance.$store.state.chat.activeChat);
+          }
 
-          // Insert message and clear
-          this.$store.commit("insertMessage");
+          // // Insert message and clear
+          // this.$store.commit("insertMessage");
 
-          this.$http
-            .create({ withCredentials: true })
-            .post("http://localhost:5443/api/send", {});
+          // this.$http
+          //   .create({ withCredentials: true })
+          //   .post("http://localhost:5443/api/send", {});
         }
       }
     },
     log() {
-      console.log('ended');
+      console.log("ended");
     },
     input() {
       var input = this.searchTerm;
@@ -274,9 +281,15 @@ export default {
   created() {
     var socket = this.socket;
     var instance = this;
-    socket.on("response", function(data) {
-      instance.$store.commit("insertResults", data)
+    socket.on("response", function(response) {
+      instance.$store.commit("insertResults", response);
       // console.log(instance.$store.state.searchResults);
+    });
+
+    socket.on("sentResponse", function(response) {
+      if (response.success === true) {
+        instance.$store.commit("createChat", response.data);
+      }
     });
   }
 };

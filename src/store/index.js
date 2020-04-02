@@ -9,6 +9,7 @@ export default new Vuex.Store({
     auth: false,
     searchResults: [],
     self: {},
+    selfMini: {},
     darkMode: true,
     miniDrawer: false,
     expandOnHover: false,
@@ -28,15 +29,9 @@ export default new Vuex.Store({
       
       // Default chat structure
       struct: {
-        messageStructure: { from: null, contents: { text: "", image: [], timestamp: "" } },
-        receipientUsername: '',
-        avatar: '',
+        messageStructure: { to: "", from: null, contents: { text: "", image: [], timestamp: "" } },
         participants: [],
-        messages: [
-          {
-            receipient: "", contents: { text: "", image: [], timestamp: "" }
-          }
-        ]
+        messages: []
       },
 
       // *Remember to use user ID for the 'for' and 'to' fields
@@ -274,6 +269,8 @@ export default new Vuex.Store({
     },
     setUserDetails(state, payload) {
       state.self = payload
+      var mini = JSON.parse(JSON.stringify(payload))
+      state.selfMini = { _id: mini._id, username: mini.username, avatar: mini.avatar }
     },
     switchMini(state) {
       state.miniDrawer = !state.miniDrawer;
@@ -287,6 +284,7 @@ export default new Vuex.Store({
     // Chat view
     selectChat(state, idx) {
       state.chat.chatIndex = idx;
+      state.chat.activeChat = state.self.chats[idx]
     },
     // Insert message to the existing list of messages
     insertMessage(state) {
@@ -313,8 +311,7 @@ export default new Vuex.Store({
 
     // Bind message text input to chat
     updateMessage(state, payload) {
-      state.chat.singleChats[state.chat.chatIndex].messageStructure.contents.text = payload.value
-      state.chat.singleChats[state.chat.chatIndex].messageStructure.from = payload.sender
+      state.chat.activeChat.messageStructure.contents.text = payload.value
     },
 
     // Search results for search as you type
@@ -326,14 +323,35 @@ export default new Vuex.Store({
     makeActive(state, payload){
 
       // Duplicate the object
-      var structure = JSON.parse(JSON.stringify(state.chat.struct))
-      structure.from = state.self._id;
-      structure.receipientUsername = payload.username;
-      structure.avatar = payload.avatar;
+      var structure = JSON.parse(JSON.stringify(state.chat.struct));
+      structure.participants = [state.selfMini, payload];
+      structure.messageStructure.from = state.self._id
+      structure.messageStructure.to = payload._id
       structure.messages = []
 
       // update active chat object
-      state.activeChat = structure;
+      state.chat.activeChat = structure;
+    },
+
+    // Insert timestamp to chat
+    insertTimestamp(state) {
+      state.chat.activeChat.messageStructure.contents.timestamp = Date.now()
+    },
+
+    createChat(state, payload){
+
+      state.self.chats.push(payload)
+      
+      // Length the chats array
+      let len = state.self.chats.length
+      // len - 1 = to the index of the last chat
+      state.chat.activeChat = state.self.chats[len - 1]
+
+      // Clear active chat contents
+      state.chat.activeChat.messageStructure.contents.text = '';
+      state.chat.activeChat.messageStructure.contents.images = [];
+      state.chat.activeChat.messageStructure.contents.timestamp = '';
+
     }
 
   },
