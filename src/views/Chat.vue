@@ -137,18 +137,34 @@
             </v-layout>
 
             <!-- Message input -->
-            <v-row no-gutters id="message-input">
-              <v-card width="100%" flat class="px-4 py-3">
-                <v-text-field
-                  v-model="messageInput"
-                  placeholder="Enter message ..."
-                  hide-details
-                  rounded
-                  filled
-                  dense
-                  @keyup.enter.native="send()"
-                ></v-text-field>
-              </v-card>
+            <v-row no-gutters id="message-input" justify="center" align="center">
+              <v-col cols="auto" justify="center" align="center">
+                <!-- Emoji picker -->
+                <v-menu  v-model="emojiMenu" :close-on-content-click="false" top offset-y>
+                  <template v-slot:activator="{ on }">
+                    <v-btn icon color="indigo" v-on="on">
+                      <v-icon medium>mdi-emoticon-outline</v-icon>
+                    </v-btn>
+                  </template>
+                  <v-card >
+                    <vemojipicker @select="selectEmoji"> </vemojipicker>
+                  </v-card>
+                </v-menu>
+              </v-col>
+
+              <v-col cols="11">
+                <v-card width="100%" flat class="px-3 py-3">
+                  <!-- Message input -->
+                  <v-text-field
+                    v-model="messageInput"
+                    placeholder="Enter message ..."
+                    hide-details
+                    filled
+                    dense
+                    @keyup.enter.native="send()"
+                  ></v-text-field>
+                </v-card>
+              </v-col>
             </v-row>
           </v-card>
         </v-col>
@@ -157,13 +173,12 @@
   </v-container>
 </template>
 <script>
-// socket.on("response", function(data) {
-//   console.log(data);
-// });
+import vemojipicker from "v-emoji-picker";
 
 export default {
   data() {
     return {
+      emojiMenu: false,
       newChat: false,
       socket: this.$socket,
       fav: true,
@@ -177,6 +192,11 @@ export default {
       self: this.$store.state.self
     };
   },
+
+  components: {
+    vemojipicker
+  },
+
   computed: {
     chats() {
       return this.$store.state.self.chats;
@@ -212,6 +232,9 @@ export default {
     }
   },
   methods: {
+    selectEmoji(emoji) {
+      console.log(emoji);
+    },
     selectUser(user) {
       var chats = this.$store.state.self.chats;
       var found = false;
@@ -246,14 +269,14 @@ export default {
         if (temp.length > 0) {
           // Check if it's an existing chat
           if (message._id) {
-
             this.$store.commit("insertTimestamp");
-            var messageObj = JSON.parse(JSON.stringify(instance.$store.state.chat.activeChat));
-            delete messageObj.messages
-            delete messageObj.messageStructure._id
-            delete messageObj.messageStructure.contents._id
+            var messageObj = JSON.parse(
+              JSON.stringify(instance.$store.state.chat.activeChat)
+            );
+            delete messageObj.messages;
+            delete messageObj.messageStructure._id;
+            delete messageObj.messageStructure.contents._id;
             this.socket.emit("send", messageObj);
-
           } else {
             this.$store.commit("insertTimestamp");
             this.socket.emit("send", instance.$store.state.chat.activeChat);
@@ -287,7 +310,7 @@ export default {
     }
   },
   created() {
-    var socket = this.socket;
+    var socket = this.$socket;
     var instance = this;
     socket.on("response", function(response) {
       instance.$store.commit("insertResults", response);
@@ -309,6 +332,10 @@ export default {
 $margin: 8px;
 $rightBubble: #0277bd;
 $leftBubble: #f5f5f5;
+
+.move-up{
+  margin-top: -10px;
+}
 
 .input {
   height: 40px;

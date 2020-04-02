@@ -17,7 +17,8 @@ export default new Vuex.Store({
       { name: "Dashboard", icon: "mdi-desktop-mac-dashboard", link: "/dashboard" },
       { name: "Chat", icon: "mdi-chat", link: "/chat" },
       { name: "Profile", icon: "mdi-account", link: "/profile" },
-      { name: "Settings", icon: "mdi-cog", link: "/settings" }
+      { name: "Settings", icon: "mdi-cog", link: "/settings" },
+      { name: "ATC", icon: "mdi-network", link: "/atc" }
     ],
     chat: {
 
