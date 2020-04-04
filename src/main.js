@@ -32,6 +32,8 @@ Vue.prototype.$http.create({ withCredentials: true })
       }
     } else {
       store.dispatch("deauth");
+
+      
     }
   })
   .catch(function (error) {
