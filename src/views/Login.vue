@@ -171,6 +171,7 @@ export default {
               // console.log(response.data.user)
               instance.$store.dispatch("auth");
               instance.$store.commit("setUserDetails", response.data.user);
+              instance.$openSocket();
               router.push({ name: "dashboard" });
             }
 
@@ -218,6 +219,7 @@ export default {
 
               instance.$store.dispatch("auth");
               instance.$store.commit("setUserDetails", response.data.user);
+              instance.$openSocket();
               router.push({ name: "dashboard" });
             }
             // console.log(response);

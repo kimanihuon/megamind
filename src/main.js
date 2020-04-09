@@ -5,10 +5,40 @@ import store from "./store";
 import vuetify from "./plugins/vuetify";
 import axios from "axios";
 import io from "socket.io-client";
+import VueChatScroll from "vue-chat-scroll";
+
+Vue.use(VueChatScroll)
 
 // Add axios to the global object
 Vue.prototype.$http = axios;
 Vue.config.productionTip = false;
+Vue.prototype.$openSocket = function () {
+  Vue.prototype.$socket = io.connect("http://localhost:5443");
+
+  var socket = this.$socket;
+
+  socket.on("response", function (response) {
+    store.commit("insertResults", response);
+    // console.log(instance.$store.state.searchResults);
+  });
+
+  socket.on("sentResponse", function (response) {
+    if (response.success === true && response.type == "new") {
+      store.commit("createChat", response.data);
+    } else if (response.success === true && response.type == "existing") {
+      store.commit("updateChat", response.data);
+    }
+  });
+
+  socket.on("chatNew", function (response) {
+    response
+  });
+
+  socket.on("chatUpdate", function (response) {
+    response
+  })
+
+}
 
 // The requested pathname by the user
 var requested = window.location.pathname;
@@ -23,8 +53,8 @@ Vue.prototype.$http.create({ withCredentials: true })
       store.commit("setUserDetails", response.data.details);
       store.dispatch("auth");
       // Websocket
-      Vue.prototype.$socket = io.connect("http://localhost:5443");
-      
+      Vue.prototype.$openSocket()
+
       if (requested == "/login") {
         router.push({ path: `/dashboard` })
       } else {
@@ -32,8 +62,6 @@ Vue.prototype.$http.create({ withCredentials: true })
       }
     } else {
       store.dispatch("deauth");
-
-      
     }
   })
   .catch(function (error) {
