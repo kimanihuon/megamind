@@ -42,6 +42,10 @@ export default new Vuex.Store({
     },
     deauthenticate(state) {
       state.auth = false;
+      state.self = {};
+      state.selfMini = {};
+      state.chat.chatIndex = null;
+      state.chat.activeChat = {};
     },
     setUserDetails(state, payload) {
       state.self = payload
@@ -129,6 +133,10 @@ export default new Vuex.Store({
       state.chat.activeChat.messageStructure.contents.images = [];
       state.chat.activeChat.messageStructure.contents.timestamp = '';
 
+    },
+
+    receiveChat(state, payload){
+      state.self.chats.push(payload)
     },
 
     updateChat(state, payload) {
