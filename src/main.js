@@ -30,8 +30,8 @@ Vue.prototype.$openSocket = function () {
     }
   });
 
-  socket.on("chatNew", function (response) {
-    response
+  socket.on("newMessage", function (chat) {
+    store.commit("newMessage", chat)
   });
 
   socket.on("chatUpdate", function (response) {

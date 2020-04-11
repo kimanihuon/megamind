@@ -137,7 +137,9 @@
                       >{{ message.contents.text }}</v-card-subtitle>
 
                       <v-col class="pa-0 ma-0">
-                        <v-card-subtitle class="stamp blue-grey--text text--lighten-2">{{ timeStamp(message.contents.timestamp) }}</v-card-subtitle>
+                        <v-card-subtitle
+                          class="stamp blue-grey--text text--lighten-2"
+                        >{{ timeStamp(message.contents.timestamp) }}</v-card-subtitle>
                       </v-col>
                     </v-row>
                   </v-card>
@@ -157,12 +159,14 @@
                       </v-btn>
                     </template>
                     <v-card>
-                      <vemojipicker @select="selectEmoji"></vemojipicker>
+                      <vemojipicker @select="appendEmoji"></vemojipicker>
                     </v-card>
                   </v-menu>
                   <!-- Message input -->
                   <v-text-field
-                    v-model="messageInput"
+                    id="msgbox"
+                    v-model.lazy="messageInput"
+                    autocomplete="off"
                     placeholder="Enter message ..."
                     hide-details
                     filled
@@ -185,6 +189,8 @@ import moment from "moment";
 export default {
   data() {
     return {
+      timeout: '',
+      msgbox: '',
       emojiMenu: false,
       newChat: false,
       socket: this.$socket,
@@ -193,9 +199,10 @@ export default {
       message: false,
       hints: true,
       searchTerm: null,
-      maxInput: 16,
+      maxInput: 10,
       waiting: false,
       valid: true,
+      idx: this.$store.state.chat.chatIndex,
       self: this.$store.state.self
     };
   },
@@ -226,9 +233,7 @@ export default {
     messageInput: {
       set(value) {
         // commit mutation. Change value
-        this.$store.commit("updateMessage", {
-          value: value
-        });
+        this.updateMessage(value);
       },
       get() {
         return this.activeChat.messageStructure.contents.text;
@@ -236,10 +241,37 @@ export default {
     }
   },
   methods: {
-    selectEmoji(emoji) {
-      console.log(emoji);
+    typing() {
+      // Get the input box
+      this.msgbox = document.getElementById('msgbox');
+      // Init a timeout variable to be used below
+      // this.timeout = null;
+      // // Listen for keystroke events
+      // this.msgbox.addEventListener('keyup', function (e) {
+      //     e
+      //     // Clear the timeout if it has already been set.
+      //     // This will prevent the previous task from executing
+      //     // if it has been less than <MILLISECONDS>
+      //     clearTimeout(this.timeout);
+      //     // Make a new timeout set to go off in 1000ms (1 second)
+      //     this.timeout = setTimeout(function () {
+      //         console.log('Input Value:' + this.msgbox.value);
+      //     }, 1000);
+      // });
+    },
+    updateMessage(value) {
+      this.$store.commit("updateMessage", { value: value });
+    },
+    appendEmoji(emoji) {
+      this.$store.commit("appendEmoji", emoji.data )
     },
     selectUser(user) {
+
+      if (user._id == this.self._id) {
+        alert(":) That's you")
+        return
+      }
+
       var chats = this.$store.state.self.chats;
       var found = false;
 
@@ -248,7 +280,7 @@ export default {
         var chat = chats[i];
         if (
           chat.participants[1]._id == user._id ||
-          chat.participants[0] == user._id
+          chat.participants[0]._id == user._id
         ) {
           this.$store.commit("selectChat", i);
           found = true;
@@ -263,6 +295,7 @@ export default {
     activate(idx) {
       // Set the index of the chat we want to display
       this.$store.commit("selectChat", idx);
+
     },
     send() {
       var message = this.$store.state.chat.activeChat.messageStructure;
@@ -285,9 +318,9 @@ export default {
 
             // If the first participant is self then send to the other participant, else send to the first
             messageObj.messageStructure.to =
-              this.self._id == messageObj.participants[0]
-                ? messageObj.participants[1]
-                : messageObj.participants[0];
+              this.self._id == messageObj.participants[0]._id
+                ? messageObj.participants[1]._id
+                : messageObj.participants[0]._id;
 
             delete messageObj.messages;
             delete messageObj.messageStructure._id;
@@ -414,7 +447,6 @@ $leftBubble: #f5f5f5;
   text-align: right;
   font-size: 11px;
   font-weight: 700;
-
 }
 
 .chat-list {
@@ -424,7 +456,8 @@ $leftBubble: #f5f5f5;
 }
 
 .c-list {
-  padding-bottom: 23px;
+  padding-bottom: 70px;
+  -webkit-padding-after: 40px;
 }
 
 .list {

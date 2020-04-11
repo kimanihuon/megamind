@@ -138,6 +138,19 @@ export default new Vuex.Store({
       state.chat.activeChat.messageStructure.contents.text = '';
       state.chat.activeChat.messageStructure.contents.images = [];
       state.chat.activeChat.messageStructure.contents.timestamp = '';
+    },
+
+    newMessage(state, payload) {
+      for (let i = 0; i < state.self.chats.length; i++) {
+        if (payload._id == state.self.chats[i]._id) {
+          state.self.chats[i].messages.push(payload.messageStructure)
+          break
+        }
+      }
+    },
+
+    appendEmoji(state, payload) {
+      state.chat.activeChat.messageStructure.contents.text = state.chat.activeChat.messageStructure.contents.text.concat(payload)
     }
 
   },

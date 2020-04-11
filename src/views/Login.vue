@@ -4,6 +4,7 @@
       <!-- Banner -->
       <v-toolbar color="primary" dark flat class="d-flex justify-center">
         <v-toolbar-title>WESKOOL</v-toolbar-title>
+        
       </v-toolbar>
 
       <v-form ref="form" v-model="valid" lazy-validation>
@@ -180,7 +181,7 @@ export default {
           err => {
             instance.loginLoading = false;
             instance.requestSuccess = false;
-            instance.requestResponse = "Server error occurred";
+            instance.requestResponse = err;
             console.log(err);
           }
         );
