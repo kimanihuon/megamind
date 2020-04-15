@@ -159,6 +159,13 @@ export default new Vuex.Store({
 
     appendEmoji(state, payload) {
       state.chat.activeChat.messageStructure.contents.text = state.chat.activeChat.messageStructure.contents.text.concat(payload)
+    },
+
+    updateProfile(state, payload){
+      state.self.name = payload.name;
+      state.self.phone = payload.phone;
+      state.self.email = payload.email;
+      state.self.about = payload.about;
     }
 
   },
