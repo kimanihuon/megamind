@@ -2,6 +2,7 @@
   <v-content>
     <v-switch v-model="miniDrawer" :label="`Drawer mini: ${ miniDrawer ? 'On' : 'Off' }`"></v-switch>
     <v-switch v-model="expandHover" :label="`Expand on hover: ${ expandHover ? 'On' : 'Off' }`"></v-switch>
+    <v-switch v-model="darkMode" :label="`Enable dark mode: ${ darkMode ? 'On' : 'Off' }`"></v-switch>
   </v-content>
 </template>
 
@@ -10,7 +11,7 @@
 export default {
   data() {
     return {
-      //
+      //f
     };
   },
 
@@ -42,6 +43,19 @@ export default {
         return this.$store.state.expandOnHover;
       }
     },
+
+    // Expand on hover switch
+    darkMode: {
+      set() {
+        //   commit mutation. Change value
+        this.$store.commit("switchDark");
+        this.$vuetify.theme.dark = this.$store.state.darkMode;
+      },
+      get() {
+        //   get state
+        return this.$store.state.darkMode;
+      }
+    }
 
   }
 };

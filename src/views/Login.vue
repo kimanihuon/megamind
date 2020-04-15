@@ -4,6 +4,7 @@
       <!-- Banner -->
       <v-toolbar color="primary" dark flat class="d-flex justify-center">
         <v-toolbar-title>WESKOOL</v-toolbar-title>
+        
       </v-toolbar>
 
       <v-form ref="form" v-model="valid" lazy-validation>
@@ -168,8 +169,11 @@ export default {
             instance.requestResponse = response.data.message;
 
             if (response.data.success) {
+              // console.log(response.data.user)
               instance.$store.dispatch("auth");
-              router.push({ name: "Dashboard" });
+              instance.$store.commit("setUserDetails", response.data.user);
+              instance.$openSocket();
+              router.push({ name: "dashboard" });
             }
 
             // console.log(response);
@@ -177,7 +181,7 @@ export default {
           err => {
             instance.loginLoading = false;
             instance.requestSuccess = false;
-            instance.requestResponse = "Server error occurred";
+            instance.requestResponse = err;
             console.log(err);
           }
         );
@@ -211,8 +215,13 @@ export default {
             instance.requestResponse = response.data.message;
 
             if (response.data.success) {
+
+              // console.log(response.data.user)
+
               instance.$store.dispatch("auth");
-              router.push({ name: "Dashboard" });
+              instance.$store.commit("setUserDetails", response.data.user);
+              instance.$openSocket();
+              router.push({ name: "dashboard" });
             }
             // console.log(response);
           },

@@ -1,7 +1,5 @@
 <template>
-  <v-container>
-    <v-container class="fill-height" fluid></v-container>
-  </v-container>
+  <v-container class="fill-height" fluid></v-container>
 </template>
 
 <script>
@@ -13,6 +11,12 @@ export default {
       drawer: null
     };
   },
+
+  mounted() {
+    console.log(
+      this.$store.state.self
+    )
+  }
 
 };
 </script>
