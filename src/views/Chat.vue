@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid class="pa-0 ma-0 test">
+  <v-container fluid class="pa-0 ma-0">
     <!-- Main card -->
     <!-- Tile to remove rounded edges -->
     <v-card height="92.5vh" tile>

@@ -7,6 +7,29 @@ export default new Vuex.Store({
   strict: true,
   state: {
     auth: false,
+    navDrawer: {state: true},
+    dash: {
+      color: "#263238",
+      colors: ["#1A237E", "#1B5E20", "#FF4081", "#673AB7", "#455A64", "#263238"],
+      classes: [{ id: 1, name: "Networking" }, { id: 2, name: "Operating Systems" }, { id: 3, name: "Software Engineering" }, { id: 4, name: "Data Structures" }, { id: 5, name: "Linear Algebra" }],
+      assignments: [{ id: 1, due: "1/4/2020", name: "Functions of CPU" }, { id: 1, due: "1/4/2020", name: "Matrices" }, { id: 1, due: "1/4/2020", name: "Network structures" }],
+      messages: [{ id: 1, name: "Jimmy", message: "Hi", status: false, time: 11223445, media: "" }, { name: "Jane", message: "New assignment", status: true, time: 11223445, media: "" }],
+      friends: [{ id: 1, name: "John Doe", username: "jdoe11", email: "doe@mail.com", number: "0789654321" }, { id: 2, name: "Jane Doe", username: "jdoe11", email: "doe@mail.com", number: "0789654321" }],
+      people: [{ id: 1, name: "Elon Musk", username: "jdoe11", email: "doe@mail.com", number: "0789654321" }, { id: 2, name: "Kylian Mbappe", username: "jdoe11", email: "doe@mail.com", number: "0789654321" }],
+      notifications: [{ id: 1, name: "New message", type: "messages", }],
+      columns: [
+        { name: "Homework", active: false, items: [{ name: 'Walkthrough', src: "https://www.youtube.com/embed?v=OC93pNSrRP8" }, { id: 1, name: "John Doe", username: "jdoe11", email: "doe@mail.com", number: "0789654321" }] },
+        { name: "Assignments", active: true, items: [{ id: 1, name: "Elon Musk", username: "jdoe11", email: "doe@mail.com", number: "0789654321" }, { id: 2, name: "Kylian Mbappe", username: "jdoe11", email: "doe@mail.com", number: "0789654321" }] },
+        { name: "Meetings", active: true, items: [{ id: 1, name: "New message", type: "messages", }, { id: 1, name: "Networking" }, { id: 2, name: "Operating Systems" }, { id: 3, name: "Software Engineering" }, { id: 4, name: "Data Structures" }, { id: 5, name: "Linear Algebra" }] },
+        { name: "Music", active: false, items: [{ id: 1, name: "Future", type: "messages", }, { id: 1, name: "Sean paul" }, { id: 2, name: "Miley cyrus" }, { id: 3, name: "Beyonce" }] },
+      ]
+    },
+    tracks: [],
+    navIcons: [
+
+      { name: "notify", icon: "mdi-bell", link: "", color: "#00C853" },
+      { name: "options", icon: "mdi-dots-vertical", link: "", color: "" },
+    ],
     searchResults: [],
     self: {},
     selfMini: {},
@@ -27,14 +50,48 @@ export default new Vuex.Store({
 
       // Active chat
       activeChat: {},
-      
+
       // Default chat structure
       struct: {
         messageStructure: { to: "", from: null, contents: { text: "", image: [], timestamp: "" } },
         participants: [],
         messages: []
       },
-    }
+    },
+    trackTemplate: {
+      name: '',
+      owner: '',
+      total: 0,
+      tasks: []
+    },
+    taskTemplate: {
+      name: '',
+      collaborators: '',
+      date: '',
+      items: []
+    },
+    itemTemplate: {
+      title: '',
+      url: '',
+      images: [],
+      videos: [],
+      documents: []
+    },
+
+    // An array of tracks
+    // ... Structure of the tracks
+
+    // Array of tracks
+    trackArrayTemplate: [{
+      // Array of tasks
+      track1: [{
+        // Array of items
+        task1: [{
+          item1: [{}]
+        }]
+      }]
+    }]
+
   },
   mutations: {
     authenticate(state) {
@@ -95,12 +152,12 @@ export default new Vuex.Store({
     },
 
     // Search results for search as you type
-    insertResults(state, payload){
+    insertResults(state, payload) {
       state.searchResults = [...payload]
     },
 
     // Make non-existent chat active
-    makeActive(state, payload){
+    makeActive(state, payload) {
 
       // Duplicate the object
       var structure = JSON.parse(JSON.stringify(state.chat.struct));
@@ -118,10 +175,10 @@ export default new Vuex.Store({
       state.chat.activeChat.messageStructure.contents.timestamp = Date.now();
     },
 
-    createChat(state, payload){
+    createChat(state, payload) {
 
       state.self.chats.push(payload);
-      
+
       // Length the chats array
       let len = state.self.chats.length
       // len - 1 = to the index of the last chat
@@ -135,13 +192,13 @@ export default new Vuex.Store({
 
     },
 
-    receiveChat(state, payload){
+    receiveChat(state, payload) {
       state.self.chats.push(payload)
     },
 
     updateChat(state, payload) {
       state.self.chats[state.chat.chatIndex].messages.push(payload);
-      
+
       // Clear active chat contents
       state.chat.activeChat.messageStructure.contents.text = '';
       state.chat.activeChat.messageStructure.contents.images = [];
@@ -161,11 +218,36 @@ export default new Vuex.Store({
       state.chat.activeChat.messageStructure.contents.text = state.chat.activeChat.messageStructure.contents.text.concat(payload)
     },
 
-    updateProfile(state, payload){
+    updateProfile(state, payload) {
       state.self.name = payload.name;
       state.self.phone = payload.phone;
       state.self.email = payload.email;
       state.self.about = payload.about;
+    },
+
+    updateDashList(state, payload) {
+      state.dash.columns = payload
+    },
+
+    createTrack(state, payload){
+      let tasks = [];
+      for (let i = 0; i < payload.tasks; i++) {
+        tasks.push(JSON.parse(JSON.stringify(state.taskTemplate)))
+      }
+
+      var obj = {
+        name: payload.name,
+        tasks: tasks,
+        owner: state.self._id,
+        total: payload.tasks
+      }
+
+      state.tracks.push(obj);
+
+    },
+
+    changeDrawerState(state){
+      state.navDrawer.state = !state.navDrawer.state
     }
 
   },

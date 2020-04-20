@@ -7,7 +7,10 @@ import axios from "axios";
 import io from "socket.io-client";
 import VueChatScroll from "vue-chat-scroll";
 
-Vue.use(VueChatScroll)
+Vue.use(VueChatScroll);
+
+// Registering global component
+// Vue.component('link-prevue', LinkPrevue)
 
 // Add axios to the global object
 Vue.prototype.$http = axios;
@@ -36,7 +39,7 @@ Vue.prototype.$openSocket = function () {
 
   socket.on("newChat", function (chat) {
     store.commit("receiveChat", chat )
-  })
+  });
 
 }
 
