@@ -1,8 +1,9 @@
 <template>
-  <v-container fluid class="pa-0 ma-0">
-    <v-row no-gutters class="scroll" id="cscroll">
+  <v-container fluid class="pa-0 ma-0 fill-height">
+    <!-- If tracks exists. Else -->
+    <v-row no-gutters class="scroll" id="cscroll" v-if="tracks.length > 0">
       <v-col
-        v-for="(column, idx) in columns"
+        v-for="(column, idx) in tracks"
         :key="idx"
         cols="12"
         sm="4"
@@ -67,8 +68,8 @@
             <transition-group type="transition" :name="!drag ? 'flip-list' : null">
               <!-- Card one -->
               <v-card
-                v-for="(item) in column.items"
-                :key="item.name"
+                v-for="(task, idx) in column.items"
+                :key="idx + 0"
                 id="block"
                 class="mx-auto mb-4"
                 outlined
@@ -78,10 +79,10 @@
                 <v-row no-gutters align="start">
                   <v-col cols="10" class="pa-0 ma-0">
                     <v-card-title
-                      class="title py-0 pt-2 pr-0"
+                      class="block-title py-0 pt-2 pr-0"
                       @dblclick="edit = true"
                       v-if="edit === false"
-                    >{{ item.name }}</v-card-title>
+                    >{{ task.name }}</v-card-title>
                   </v-col>
 
                   <v-col cols="2" class="pa-0 ma-0" align="end">
@@ -91,18 +92,64 @@
                   </v-col>
                 </v-row>
 
-                <v-card-subtitle>Listen to your favorite artists and albums.</v-card-subtitle>
+                <div v-for="(item, idx) in task" :key="idx">
+                  <!-- Url inside block -->
+                  <div class="px-2 pb-2" v-if="item.url">
+                    <linkPreview :url="item.url"></linkPreview>
+                  </div>
+
+                  <!-- Listing of files -->
+                  <div v-if="item.files"></div>
+
+                  <!-- Notes -->
+                  <div v-if="item.notes"></div>
+                </div>
               </v-card>
             </transition-group>
           </draggable>
 
-          <!-- Add block button -->
-          <v-row no-gutters justify="center">
-            <v-btn large icon color="grey" @click="log(navDrawer)">
-              <v-icon large>mdi-plus-circle-outline</v-icon>
+          <v-row justify="space-around" no-gutters>
+            <!-- Add multiple block/task button -->
+            <v-dialog
+              v-model="dialog"
+              fullscreen
+              hide-overlay
+              transition="dialog-bottom-transition"
+            >
+              <template v-slot:activator="{ on }">
+                <!-- Add block button -->
+                <v-btn medium icon color="grey" v-on="on">
+                  <v-icon medium>mdi-plus-circle-multiple-outline</v-icon>
+                </v-btn>
+              </template>
+              <v-toolbar dense dark color="indigo">
+                <v-btn icon dark @click="dialog = false">
+                  <v-icon>mdi-close</v-icon>
+                </v-btn>
+                <v-toolbar-title>Track editor and preview</v-toolbar-title>
+                <v-spacer></v-spacer>
+                <v-toolbar-items>
+                  <v-btn dark text @click="dialog = false">Save</v-btn>
+                </v-toolbar-items>
+              </v-toolbar>
+              <v-card>
+                <blockCreator></blockCreator>
+              </v-card>
+            </v-dialog>
+
+            <!-- Add one -->
+            <v-btn medium icon color="grey">
+              <v-icon medium>mdi-plus-circle-outline</v-icon>
             </v-btn>
           </v-row>
         </v-card>
+      </v-col>
+    </v-row>
+
+    <!-- Get started button -->
+    <v-row v-if="tracks.length < 1" no-gutters align="center" class="fill-height">
+      <v-col align="center">
+        <p>Create a track to get started</p>
       </v-col>
     </v-row>
   </v-container>
@@ -120,21 +167,27 @@
 
 <script>
 import draggable from "vuedraggable";
+import linkPreview from "../components/linkPreview";
+import blockCreator from "../components/blocksCreator";
 
 export default {
   name: "Dashboard",
 
   components: {
-    draggable
+    draggable,
+    linkPreview,
+    blockCreator
   },
 
   data() {
     return {
-      navDrawer: this.$store.state.navDrawer,
+      dialog: false,
       chips: {},
       edit: false,
       drag: false,
-      columns: JSON.parse(JSON.stringify(this.$store.state.dash.columns))
+      trackState: this.$store.state.tracks,
+      navDrawer: this.$store.state.navDrawer,
+      tracks: []
     };
   },
 
@@ -155,19 +208,29 @@ export default {
     },
     updateVal() {
       this.edit = false;
-    },
-    commitChanges() {
-      this.$store.commit("updateDashList", this.columns);
     }
   },
 
   mounted() {
     // console.log(this.$store.state.self)
+  },
+
+  watch: {
+    trackState: function() {
+      this.tracks = JSON.parse(JSON.stringify(this.trackState));
+    }
   }
 };
 </script>
 
 <style lang="scss" scoped>
+.block-title {
+  font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  color: rgb(184, 181, 181);
+}
+
 .v-chip.v-chip--outlined.v-chip.v-chip {
   background-color: chartreuse;
 }

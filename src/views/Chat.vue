@@ -163,16 +163,17 @@
                     </v-card>
                   </v-menu>
                   <!-- Message input -->
-                  <v-text-field
+                  <v-textarea
                     id="msgbox"
                     v-model.lazy="messageInput"
                     autocomplete="off"
                     placeholder="Enter message ..."
                     hide-details
-                    filled
+                    auto-grow
+                    rows="1"
                     dense
                     @keyup.enter.native="send()"
-                  ></v-text-field>
+                  ></v-textarea>
                 </v-row>
               </v-card>
             </v-row>
@@ -189,8 +190,8 @@ import moment from "moment";
 export default {
   data() {
     return {
-      timeout: '',
-      msgbox: '',
+      timeout: "",
+      msgbox: "",
       emojiMenu: false,
       newChat: false,
       socket: this.$socket,
@@ -243,7 +244,7 @@ export default {
   methods: {
     typing() {
       // Get the input box
-      this.msgbox = document.getElementById('msgbox');
+      this.msgbox = document.getElementById("msgbox");
       // Init a timeout variable to be used below
       // this.timeout = null;
       // // Listen for keystroke events
@@ -263,13 +264,12 @@ export default {
       this.$store.commit("updateMessage", { value: value });
     },
     appendEmoji(emoji) {
-      this.$store.commit("appendEmoji", emoji.data )
+      this.$store.commit("appendEmoji", emoji.data);
     },
     selectUser(user) {
-
       if (user._id == this.self._id) {
-        alert(":) That's you")
-        return
+        alert(":) That's you");
+        return;
       }
 
       var chats = this.$store.state.self.chats;
@@ -295,7 +295,6 @@ export default {
     activate(idx) {
       // Set the index of the chat we want to display
       this.$store.commit("selectChat", idx);
-
     },
     send() {
       var message = this.$store.state.chat.activeChat.messageStructure;

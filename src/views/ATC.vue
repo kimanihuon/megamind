@@ -1,16 +1,12 @@
 <template>
   <v-container>
-    <linkPreview url="https://twitter.com/benshapiro"></linkPreview>
-    <br />
     <div id="dropzone">
-      <form
-        class="dropzone needsclick"
-        id="demo-upload"
-        action="/upload"
-        enctype="multipart/form-data"
-      >
-        <div class="fallback">
-          <input name="file" type="file" multiple />
+      <form class="dropzone needsclick" id="demo-upload" enctype="multipart/form-data">
+        <div class="dz-message needsclick">
+          <v-col>
+            <v-icon large>mdi-cloud-upload</v-icon>
+            <p>Drop files here or click to upload.</p>
+          </v-col>
         </div>
       </form>
     </div>
@@ -18,16 +14,13 @@
 </template>
 
 <script>
-import linkPreview from "../components/linkPreview";
 import Dropzone from "dropzone/dist/dropzone";
 import "dropzone/dist/dropzone.css";
 
 export default {
   name: "atc",
 
-  components: {
-    linkPreview
-  },
+  components: {},
 
   data() {
     return {};
@@ -37,15 +30,38 @@ export default {
     // Dropzone class:
     /* eslint-disable */
     Dropzone.autoDiscover = false;
-    var myDropzone = new Dropzone("#demo-upload", {
-      url: "http://localhost:5555/upload"
+
+    var dropzone = new Dropzone("#demo-upload", {
+      paramName: "file",
+      maxFiles: 10,
+      maxFilesize: 20,
+      url: "http://localhost:6443/upload",
+      addRemoveLinks: true
     });
-    myDropzone.on("complete", function(file) {
-      myDropzone.removeFile(file);
+
+    dropzone.on("success", function(file, resp) {
+      // console.log(resp)
+    });
+
+    dropzone.on("addedfile", function(file) {
+      //
+    });
+
+    dropzone.on("removedfile", function(file) {
+      //
     });
   }
 };
 </script>
 
 <style lang="scss" scoped>
+.dropzone {
+  background: rgb(109, 102, 102);
+  border-radius: 5px;
+  border: 2px dashed rgb(0, 135, 247);
+  border-image: none;
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+}
 </style>

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-card :max-width="cardWidth" class="mx-auto pa-2 pt-1">
+    <v-card :max-width="cardWidth" color="#263238" class="mx-auto pa-2 pt-1">
       <v-row no-gutters justify="end">
         <v-btn icon>
           <v-icon>mdi-share</v-icon>
@@ -15,23 +15,61 @@
       </v-row>
 
       <v-row no-gutters v-if="response">
-        <v-img :src="response.images[0]" :height="imageHeight" dark></v-img>
+        <!-- site image -->
+        <v-img :src="response.images[0]" :height="imageHeight" dark>
+          <!-- Youtube play button -->
+          <v-row
+            v-if="youtubeCheck() === true"
+            no-gutters
+            justify="center"
+            align="center"
+            class="fill-height"
+          >
+            <v-col justify="center" align="center">
+              <v-btn x-large icon class="mx-2">
+                <v-icon x-large color="red">mdi-youtube</v-icon>
+              </v-btn>
+            </v-col>
+          </v-row>
 
-        <v-card outlined width="100%" class="pa-0 ma-0">
+          <!-- Url Open button -->
+          <v-row
+            v-if="youtubeCheck() !== true"
+            no-gutters
+            justify="center"
+            align="center"
+            class="fill-height"
+          >
+            <v-col justify="center" align="center">
+              <v-btn medium fab class="mx-2">
+                <v-icon x-large color="blue">mdi-open-in-app</v-icon>
+              </v-btn>
+            </v-col>
+          </v-row>
+        </v-img>
+
+        <!-- Title and description -->
+        <v-card
+          outlined
+          width="100%"
+          class="pa-0 px-1 ma-0"
+          v-if="size == 'large' || size == 'medium'"
+        >
           <v-col class="pa-0">
             <v-row no-gutters>
               <v-col align="center">
-                <v-card-title class="px-0 justify-center">{{ response.title }}</v-card-title>
-                <v-card-subtitle class="px-0">{{ response.description }}</v-card-subtitle>
+                <v-card-title class="px-0 justify-center pv-desc">{{ response.title }}</v-card-title>
+                <v-card-subtitle class="px-0 pv-desc">{{ response.description }}</v-card-subtitle>
               </v-col>
             </v-row>
           </v-col>
         </v-card>
 
-        <v-row no-gutters>
+        <!-- Url link -->
+        <v-row no-gutters v-if="size == 'large'">
           <v-col align="center">
             <v-card-subtitle class="py-2 px-0 link">
-              <a :href="url">{{ url }}</a>
+              <a :href="url" class="link">{{ url }}</a>
             </v-card-subtitle>
           </v-col>
         </v-row>
@@ -49,9 +87,15 @@ export default {
       type: String,
       default: ""
     },
+
     cardWidth: {
       type: String,
       default: "300px"
+    },
+
+    size: {
+      type: String,
+      default: "small"
     },
 
     imageHeight: {
@@ -107,7 +151,7 @@ export default {
         this.httpRequest(
           response => {
             this.response = JSON.parse(response);
-            // console.log(this.response);
+            console.log(this.response);
           },
           () => {
             this.response = null;
@@ -133,14 +177,31 @@ export default {
         }
       };
       http.send(params);
+    },
+    youtubeCheck: function() {
+      const regex = /^(https?\:\/\/)?((www\.)?youtube\.com|youtu\.?be)\/.+$/;
+      return regex.test(this.url);
     }
   }
 };
 </script>
 
 <style lang="scss" scoped>
+.pv-desc {
+  /* Instead use this non-standard one: */
+  word-break: break-word;
+}
+
+.card {
+  border: thin dotted rgb(0, 4, 255);
+}
+
 .link a {
   text-decoration: none;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  /* Instead use this non-standard one: */
+  word-break: break-word;
 }
 
 .link a:hover {

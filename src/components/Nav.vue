@@ -57,7 +57,6 @@
             <v-list-item>
               <v-list-item-content class="text-center">
                 <v-list-item-title>CREATE NEW TRACK</v-list-item-title>
-                <v-list-item-subtitle>select presets</v-list-item-subtitle>
               </v-list-item-content>
             </v-list-item>
           </v-list>
@@ -67,18 +66,7 @@
           <v-list>
             <!-- Track name -->
             <v-list-item class="pt-1">
-              <v-text-field label="Track name"></v-text-field>
-            </v-list-item>
-
-            <!-- Picker -->
-            <v-list-item>
-              <v-slider
-                :label="`Blocks: ${track.tasks}`"
-                hide-details
-                v-model="track.tasks"
-                min="1"
-                max="10"
-              ></v-slider>
+              <v-text-field v-model="track.name" label="Track name"></v-text-field>
             </v-list-item>
           </v-list>
 
@@ -117,7 +105,7 @@
         offset-y
       >
         <template v-slot:activator="{ on }">
-          <v-btn icon color="#00C853" v-on="on">
+          <v-btn icon color="" v-on="on">
             <v-icon>mdi-bell</v-icon>
           </v-btn>
         </template>

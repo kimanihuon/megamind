@@ -27,7 +27,7 @@ export default new Vuex.Store({
     tracks: [],
     navIcons: [
 
-      { name: "notify", icon: "mdi-bell", link: "", color: "#00C853" },
+      { name: "notify", icon: "mdi-bell", link: "", color: "" },
       { name: "options", icon: "mdi-dots-vertical", link: "", color: "" },
     ],
     searchResults: [],
@@ -71,11 +71,11 @@ export default new Vuex.Store({
       items: []
     },
     itemTemplate: {
+      // Either or and not all at the same time
       title: '',
       url: '',
-      images: [],
-      videos: [],
-      documents: []
+      files: [],
+      notes: ''
     },
 
     // An array of tracks
@@ -230,20 +230,15 @@ export default new Vuex.Store({
     },
 
     createTrack(state, payload){
-      let tasks = [];
-      for (let i = 0; i < payload.tasks; i++) {
-        tasks.push(JSON.parse(JSON.stringify(state.taskTemplate)))
-      }
 
       var obj = {
         name: payload.name,
-        tasks: tasks,
         owner: state.self._id,
-        total: payload.tasks
+        active: true,
+        collaborators: [],
+        tasks: []
       }
-
       state.tracks.push(obj);
-
     },
 
     changeDrawerState(state){
