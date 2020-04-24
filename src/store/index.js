@@ -26,7 +26,6 @@ export default new Vuex.Store({
     },
     tracks: [],
     navIcons: [
-
       { name: "notify", icon: "mdi-bell", link: "", color: "" },
       { name: "options", icon: "mdi-dots-vertical", link: "", color: "" },
     ],
@@ -58,39 +57,6 @@ export default new Vuex.Store({
         messages: []
       },
     },
-    trackTemplate: {
-      name: '',
-      owner: '',
-      total: 0,
-      tasks: []
-    },
-    taskTemplate: {
-      name: '',
-      collaborators: '',
-      date: '',
-      items: []
-    },
-    itemTemplate: {
-      // Either or and not all at the same time
-      title: '',
-      url: '',
-      files: [],
-      notes: ''
-    },
-
-    // An array of tracks
-    // ... Structure of the tracks
-
-    // Array of tracks
-    trackArrayTemplate: [{
-      // Array of tasks
-      track1: [{
-        // Array of items
-        task1: [{
-          item1: [{}]
-        }]
-      }]
-    }]
 
   },
   mutations: {
@@ -230,15 +196,16 @@ export default new Vuex.Store({
     },
 
     createTrack(state, payload){
+      payload.owner = state.self._id;
+      state.tracks.push(payload);
+    },
 
-      var obj = {
-        name: payload.name,
-        owner: state.self._id,
-        active: true,
-        collaborators: [],
-        tasks: []
-      }
-      state.tracks.push(obj);
+    saveTrack(state, payload) {
+      state.tracks[payload.index] = payload.column;
+    },
+
+    updateTracks(state, payload) {
+      state.tracks = JSON.parse(JSON.stringify(payload))
     },
 
     changeDrawerState(state){

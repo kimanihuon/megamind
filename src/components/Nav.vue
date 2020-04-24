@@ -82,19 +82,9 @@
       </v-menu>
 
       <!-- Add task icon -->
-      <v-menu
-        v-model="taskAdder"
-        :close-on-content-click="false"
-        :nudge-width="200"
-        absolute
-        offset-y
-      >
-        <template v-slot:activator="{ on }">
-          <v-btn icon color="#FF1744" v-on="on">
-            <v-icon>mdi-tray-plus</v-icon>
-          </v-btn>
-        </template>
-      </v-menu>
+      <v-btn icon color="indigo">
+        <v-icon>mdi-filter</v-icon>
+      </v-btn>
 
       <!-- Notifications icon -->
       <v-menu
@@ -105,7 +95,7 @@
         offset-y
       >
         <template v-slot:activator="{ on }">
-          <v-btn icon color="" v-on="on">
+          <v-btn icon color v-on="on">
             <v-icon>mdi-bell</v-icon>
           </v-btn>
         </template>
@@ -137,8 +127,11 @@ export default {
     return {
       drawer: true,
       track: {
-        tasks: 1,
-        name: ""
+        name: "",
+        editor: false,
+        active: true,
+        blocks: [],
+        archived: []
       },
       fav: true,
       trackAdder: false,
@@ -180,7 +173,10 @@ export default {
         });
     },
     createTrack() {
-      this.$store.commit("createTrack", JSON.parse(JSON.stringify(this.track)));
+      // *TODO: database call to create track
+      var track = JSON.parse(JSON.stringify(this.track));
+      this.$store.commit("createTrack", track);
+      this.track.name = "";
     }
   },
 

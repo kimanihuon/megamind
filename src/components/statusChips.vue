@@ -5,11 +5,11 @@
       <!-- Active blocks button -->
       <v-chip
         class="my-2 mx-2"
-        :color="column.blocks[index].active ? chipColor : chipColorArchive"
-        :outlined="!column.blocks[index].active ? true : false"
+        :color="column[type][index].active ? chipColor : chipColorArchive"
+        :outlined="!column[type][index].active ? true : false"
         text-color="white"
         small
-        @click="column.blocks[index].active  = true"
+        @click="column[type][index].active = true, insertToActive(index)"
       >
         <v-avatar left>
           <v-icon small>mdi-white-balance-sunny</v-icon>
@@ -19,11 +19,11 @@
       <!-- Archived blocks button -->
       <v-chip
         class="my-2"
-        :color="column.blocks[index].active ? chipColor : chipColorArchive"
-        :outlined="column.blocks[index].active  ? true : false"
+        :color="column[type][index].active ? chipColor : chipColorArchive"
+        :outlined="column[type][index].active  ? true : false"
         text-color="white"
         small
-        @click="column.blocks[index].active = false"
+        @click="column[type][index].active = false, insertToArchive(index)"
       >
         <v-avatar left>
           <v-icon small>mdi-power-sleep</v-icon>
@@ -42,18 +42,26 @@
 
 <script>
 export default {
-  props: ["column", "index"],
+  props: ["column", "index", "type"],
 
   data() {
     return {
-        chipColor: "green",
-        chipColorArchive: "red"
+      chipColor: "green",
+      chipColorArchive: "red"
     };
   },
 
   methods: {
     log: function(evt) {
       window.console.log(evt);
+    },
+    insertToArchive(idx) {
+      this.column.archived.push(this.column.blocks[idx])
+      this.column.blocks.splice(idx, 1);
+    },
+    insertToActive(idx) {
+      this.column.blocks.push(this.column.archived[idx])
+      this.column.archived.splice(idx, 1);
     }
   }
 };
