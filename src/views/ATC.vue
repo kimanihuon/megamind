@@ -36,6 +36,7 @@ export default {
       maxFiles: 10,
       maxFilesize: 20,
       url: "http://localhost:6443/upload",
+      withCredentials: true,
       addRemoveLinks: true
     });
 

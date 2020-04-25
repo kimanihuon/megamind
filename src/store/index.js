@@ -197,15 +197,15 @@ export default new Vuex.Store({
 
     createTrack(state, payload){
       payload.owner = state.self._id;
-      state.tracks.push(payload);
+      state.self.tracks.push(payload);
     },
 
     saveTrack(state, payload) {
-      state.tracks[payload.index] = payload.column;
+      state.self.tracks[payload.index] = payload.column;
     },
 
     updateTracks(state, payload) {
-      state.tracks = JSON.parse(JSON.stringify(payload))
+      state.self.tracks = JSON.parse(JSON.stringify(payload))
     },
 
     changeDrawerState(state){

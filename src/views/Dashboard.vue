@@ -133,8 +133,8 @@ export default {
       chips: {},
       edit: false,
       drag: false,
-      editableTracks: JSON.parse(JSON.stringify(this.$store.state.tracks)),
-      tracks: this.$store.state.tracks,
+      editableTracks: JSON.parse(JSON.stringify(this.$store.state.self.tracks)),
+      tracks: this.$store.state.self.tracks,
       navDrawer: this.$store.state.navDrawer
     };
   },
@@ -171,7 +171,7 @@ export default {
   mounted() {
     this.$store.subscribe((mutation, state) => {
       if (mutation.type === "saveTrack" || mutation.type === "createTrack") {
-        this.editableTracks = JSON.parse(JSON.stringify(state.tracks));
+        this.editableTracks = JSON.parse(JSON.stringify(state.self.tracks));
       }
     });
     // console.log(this.$store.state.self)

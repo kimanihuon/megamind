@@ -60,9 +60,9 @@ export default {
   data() {
     return {
       items: [
+        { title: "Edit", icon: "mdi-circle-edit-outline" },
         { title: "Share", icon: "mdi-share-variant" },
         { title: "Delete", icon: "mdi-trash-can-outline" },
-        { title: "Save", icon: "mdi-content-save-outline" },
         { title: "Duplicate", icon: "mdi-content-duplicate" }
       ],
       chipColor: "indigo",

@@ -79,12 +79,14 @@
             <v-card-title class="py-0 pt-1 pb-2 wd-break">{{ column.name }}</v-card-title>
           </v-row>
 
+          <!-- Display active blocks -->
           <div v-if="column.active">
             <div v-for="(block, idx) in column.blocks" :key="idx">
               <blocksTemplate :block="block"></blocksTemplate>
             </div>
           </div>
 
+          <!-- Display archived blocks -->
           <div v-if="!column.active">
             <div v-for="(block, idx) in column.archived" :key="idx">
               <blocksTemplate :block="block"></blocksTemplate>
@@ -216,12 +218,29 @@ export default {
 
   watch: {
     save() {
-      this.$store.commit("saveTrack", {
-        column: this.column,
-        index: this.index
-      });
-      // *TODO: Database call
-      this.$emit("saved", true);
+      var instance = this;
+      this.$http
+        .create({ withCredentials: true })
+        .post("http://localhost:5443/api/track", this.column)
+        .then(function(response) {
+          if (response.data.success === true) {
+            if (!instance.column._id) {
+              instance.column._id = response.data.trackid;
+            }
+            instance.$store.commit("saveTrack", {
+              column: instance.column,
+              index: instance.index
+            });
+            // *TODO: Database call
+            instance.$emit("saved", true);
+          } else {
+            window.alert("Oops! something happened. You might offline");
+          }
+        })
+        .catch(function(error) {
+          console.log(error);
+          window.alert("Oops! something happened. You might offline");
+        });
     },
     track(track) {
       this.column = JSON.parse(JSON.stringify(track));
@@ -234,11 +253,6 @@ export default {
 </script>
 
 <style lang="css" scoped>
-/* Targetting the image tag with the v-html attribute */
-.notes >>> img {
-  width: 100%;
-  height: auto;
-}
 
 .f-color {
   color: black;

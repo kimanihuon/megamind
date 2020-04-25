@@ -33,7 +33,7 @@
       </div>
 
       <!-- Notes -->
-      <div v-if="block.notes" class="px-4 pb-4">
+      <div v-if="block.notes" id="" class=" px-4 pb-4 pt-1">
         <div v-html="block.content" class="notes px-1"></div>
       </div>
 
@@ -74,7 +74,10 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
+
+<style lang="css" scoped>
+/* For the deep target to work the language has to be css and not scss */
+
 /* Targetting the image tag with the v-html attribute */
 .notes >>> img {
   width: 100%;

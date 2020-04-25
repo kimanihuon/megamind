@@ -210,6 +210,7 @@ export default {
       edit: false,
       drag: false,
       selection: 0,
+      panel: [0, 1],
       loading: false,
       sizes: ["large", "medium", "small"],
       tags: ["Url/Link", "Notes", "Files", "Task"],

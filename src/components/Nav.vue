@@ -128,7 +128,6 @@ export default {
       drawer: true,
       track: {
         name: "",
-        editor: false,
         active: true,
         blocks: [],
         archived: []
