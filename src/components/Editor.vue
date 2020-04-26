@@ -1,7 +1,7 @@
 <template>
   <div>
     <vue-editor
-      v-model="content"
+      v-model="vContent"
       class="edicol"
       useCustomImageHandler
       @image-added="handleImageAdded"
@@ -13,16 +13,19 @@
 import { VueEditor } from "vue2-editor";
 
 export default {
+
+  props: ['content'],
+
   components: { VueEditor },
 
   data() {
     return {
-      content: ""
+      vContent: this.content
     };
   },
 
   watch: {
-    content(value) {
+    vContent(value) {
       this.$emit("input", value);
     }
   },

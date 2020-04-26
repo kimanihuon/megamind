@@ -41,10 +41,8 @@
         </template>
 
         <v-list>
-          <v-list-item v-for="(item, i) in items" :key="i" @click="log">
-            <v-icon small left>
-              {{ item.icon }}
-            </v-icon>
+          <v-list-item v-for="(item, i) in items" :key="i" @click="action(item.title)">
+            <v-icon small left>{{ item.icon }}</v-icon>
             <v-list-item-title>{{ item.title }}</v-list-item-title>
           </v-list-item>
         </v-list>
@@ -55,7 +53,7 @@
 
 <script>
 export default {
-  props: ["column"],
+  props: ["column", "index"],
 
   data() {
     return {
@@ -70,7 +68,31 @@ export default {
     };
   },
   methods: {
-    log() {}
+    log() {},
+    action(title) {
+      if (title === "Delete") {
+        var instance = this;
+        this.$http
+          .create({ withCredentials: true })
+          .post("http://localhost:5443/api/track/delete", { _id: this.column._id })
+          .then(function(response) {
+            if (response.data.success === true) {
+              
+              instance.$store.commit("deleteTrack", {
+                _id: instance.column._id,
+                index: instance.index
+              });
+              instance.$emit("deleted", true);
+            } else {
+              window.alert("Oops! something happened. You might be offline");
+            }
+          })
+          .catch(function(error) {
+            console.log(error);
+            window.alert("Oops! something happened. You might be offline");
+          });
+      }
+    }
   }
 };
 </script>

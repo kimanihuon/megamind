@@ -33,7 +33,7 @@
       </div>
 
       <!-- Notes -->
-      <div v-if="block.notes" id="" class=" px-4 pb-4 pt-1">
+      <div v-if="block.notes" id class="px-4 pb-4 pt-1">
         <div v-html="block.content" class="notes px-1"></div>
       </div>
 
@@ -70,6 +70,10 @@ export default {
 
   methods: {
     log() {}
+  },
+
+  created() {
+    
   }
 };
 </script>

@@ -1,5 +1,28 @@
 <template>
   <div>
+    <v-dialog v-model="frameState">
+      <v-app-bar color="deep-purple accent-4" dense dark>
+        
+        <v-toolbar-title>iFrame Page</v-toolbar-title>
+
+        <v-spacer></v-spacer>
+
+        <v-btn icon @click="frameState = false">
+          <v-icon>mdi-close</v-icon>
+        </v-btn>
+      </v-app-bar>
+      <iframe
+        v-if="frameState"
+        :src="site"
+        allow="autoplay; encrypted-media"
+        frameborder="0"
+        allowfullscreen
+        height="500"
+      >
+        <p>Your browser does not support iframes.</p>
+      </iframe>
+    </v-dialog>
+
     <v-card :max-width="cardWidth" color="#263238" class="mx-auto pa-2 pt-1">
       <v-row no-gutters justify="end">
         <v-btn icon>
@@ -26,7 +49,7 @@
             class="fill-height"
           >
             <v-col justify="center" align="center">
-              <v-btn x-large icon class="mx-2">
+              <v-btn x-large icon class="mx-2" @click="openIframe()">
                 <v-icon x-large color="red">mdi-youtube</v-icon>
               </v-btn>
             </v-col>
@@ -41,7 +64,7 @@
             class="fill-height"
           >
             <v-col justify="center" align="center">
-              <v-btn medium fab class="mx-2">
+              <v-btn medium fab class="mx-2" @click="openIframe()">
                 <v-icon x-large color="blue">mdi-open-in-app</v-icon>
               </v-btn>
             </v-col>
@@ -82,6 +105,7 @@
 <script>
 export default {
   name: "linkPreview",
+
   props: {
     url: {
       type: String,
@@ -116,10 +140,13 @@ export default {
       default: "https://linkpreview-api.herokuapp.com/"
     }
   },
+
   data() {
     return {
       response: null,
-      validUrl: false
+      validUrl: false,
+      frameState: false,
+      site: ""
     };
   },
   watch: {
@@ -151,7 +178,7 @@ export default {
         this.httpRequest(
           response => {
             this.response = JSON.parse(response);
-            console.log(this.response);
+            // console.log(this.response);
           },
           () => {
             this.response = null;
@@ -181,6 +208,15 @@ export default {
     youtubeCheck: function() {
       const regex = /^(https?\:\/\/)?((www\.)?youtube\.com|youtu\.?be)\/.+$/;
       return regex.test(this.url);
+    },
+    openIframe: function() {
+      var str = this.url;
+      if (this.youtubeCheck) {
+        var res = str.replace("com/watch?v=", "com/embed/");
+      }
+
+      this.site = res;
+      this.frameState = true;
     }
   }
 };

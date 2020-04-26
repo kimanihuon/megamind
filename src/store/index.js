@@ -7,7 +7,7 @@ export default new Vuex.Store({
   strict: true,
   state: {
     auth: false,
-    navDrawer: {state: true},
+    navDrawer: { state: true },
     dash: {
       color: "#263238",
       colors: ["#1A237E", "#1B5E20", "#FF4081", "#673AB7", "#455A64", "#263238"],
@@ -195,7 +195,7 @@ export default new Vuex.Store({
       state.dash.columns = payload
     },
 
-    createTrack(state, payload){
+    createTrack(state, payload) {
       payload.owner = state.self._id;
       state.self.tracks.push(payload);
     },
@@ -208,7 +208,11 @@ export default new Vuex.Store({
       state.self.tracks = JSON.parse(JSON.stringify(payload))
     },
 
-    changeDrawerState(state){
+    deleteTrack(state, payload) {
+      state.self.tracks.splice(payload.index, 1)
+    },
+
+    changeDrawerState(state) {
       state.navDrawer.state = !state.navDrawer.state
     }
 

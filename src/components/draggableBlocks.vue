@@ -94,12 +94,12 @@
 
                 <!-- Notes input -->
                 <v-row no-gutters class="py-2">
-                  <v-expansion-panels v-model="panel">
+                  <v-expansion-panels v-model="block.expandedEditor">
                     <v-expansion-panel>
                       <v-expansion-panel-header>Add your notes here</v-expansion-panel-header>
                       <v-expansion-panel-content>
                         <!-- Editor -->
-                        <editor @input="set(idx, ...arguments)" class="white f-color"></editor>
+                        <editor :content="block.content" @input="set(idx, ...arguments)" class="white f-color"></editor>
                       </v-expansion-panel-content>
                     </v-expansion-panel>
                   </v-expansion-panels>

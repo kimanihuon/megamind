@@ -4,7 +4,7 @@
       <!-- Blocks input -->
       <v-col cols="12" sm="6">
         <v-card class="pa-2 mx-2 sheet">
-          <trackstatuschips :column="column"></trackstatuschips>
+          <trackstatuschips :column="column" :index="index"></trackstatuschips>
 
           <!-- Track title editor -->
           <v-row no-gutters class="pa-1 my-1">
@@ -72,7 +72,7 @@
       <v-col cols="12" sm="6">
         <!-- Preview -->
         <v-card class="pa-2 mx-2 sheet" elevation="0">
-          <trackstatuschips :column="column"></trackstatuschips>
+          <trackstatuschips :column="column" :index="index"></trackstatuschips>
 
           <!-- Track title -->
           <v-row no-gutters>
@@ -141,7 +141,8 @@ export default {
         name: "",
         notes: true,
         content: "",
-        active: true
+        active: true,
+        expandedEditor: false
       },
 
       filesBlockTemplate: {

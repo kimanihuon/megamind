@@ -17,6 +17,12 @@
           <blockCreator :idx="dialogIndex" :track="dialogColumn" :save="save" @saved="trackSaved"></blockCreator>
         </v-card>
       </v-dialog>
+
+      <!-- Image display dialog -->
+      <v-dialog v-model="img">
+        <v-img :src="this.image"></v-img>
+      </v-dialog>
+
       <v-col
         v-for="(column, cidx) in editableTracks"
         :key="cidx"
@@ -30,7 +36,7 @@
           <!-- Track header -->
 
           <!-- Active and archived blocks buttons -->
-          <trackstatuschips :column="column"></trackstatuschips>
+          <trackstatuschips :column="column" :index="cidx"></trackstatuschips>
 
           <!-- Track title -->
           <v-row no-gutters>
@@ -81,7 +87,6 @@
             <v-btn medium icon color="grey" @click="addOne()">
               <v-icon medium>mdi-plus-circle-outline</v-icon>
             </v-btn>
-
           </v-row>
         </v-card>
       </v-col>
@@ -124,6 +129,8 @@ export default {
 
   data() {
     return {
+      image: "",
+      img: false,
       save: false,
       dialog: false,
       dialogColumn: {},
@@ -168,11 +175,31 @@ export default {
     addOne() {}
   },
 
+  created() {
+    window.onclick = e => {
+      if (e.target.tagName === "IMG") {
+        // console.log(e.target.src)
+        this.image = e.target.src;
+        this.img = true;
+      }
+
+      // console.log(e.target);
+      // console.log(e.target.tagName);
+    };
+  },
+
   mounted() {
     this.$store.subscribe((mutation, state) => {
-      if (mutation.type === "saveTrack" || mutation.type === "createTrack") {
+      if (mutation.type === "saveTrack" || mutation.type === "createTrack"  ) {
         this.editableTracks = JSON.parse(JSON.stringify(state.self.tracks));
-      }
+      } 
+
+      if (mutation.type === "deleteTrack"  ) {
+        console.log('boom')
+        this.editableTracks = JSON.parse(JSON.stringify(state.self.tracks));
+      } 
+
+
     });
     // console.log(this.$store.state.self)
   },
