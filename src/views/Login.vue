@@ -1,14 +1,13 @@
 <template>
   <v-container class="fill-height d-flex justify-center align-center">
-    <v-card class="mx-auto" width="420" height="520">
+    <v-card class="mx-auto" width="420">
       <!-- Banner -->
-      <v-toolbar color="primary" dark flat class="d-flex justify-center">
+      <v-toolbar :color="color" dark flat class="d-flex justify-center">
         <v-toolbar-title>WESKOOL</v-toolbar-title>
-        
       </v-toolbar>
 
       <v-form ref="form" v-model="valid" lazy-validation>
-        <v-row no-gutters class="px-6 py-6">
+        <v-row no-gutters class="px-6 pt-6 pb-4">
           <!-- Warning message -->
           <v-col v-if="requestSuccess == false" cols="12" align="center">
             <p class="red--text title">{{ requestResponse }}</p>
@@ -74,7 +73,7 @@
               :class=" signup ? 'move login' : (loginLoading ? 'moveback login glow' :'moveback login') "
               rounded
               :disabled="loginLoading || registerLoading"
-              :color="signup ? 'grey' : 'blue'"
+              :color="signup ? 'grey' : color"
               @click=" signup ? signup = false : login() "
             >Sign In</v-btn>
           </v-col>
@@ -98,7 +97,7 @@
               :class="signup ? (registerLoading ? 'move register glow' : 'move register') : 'moveback register'"
               rounded
               :disabled="loginLoading || registerLoading"
-              :color="signup ? 'blue' : 'grey' "
+              :color="signup ? color : 'grey' "
               @click=" signup ? register() : signup = true "
             >Sign Up</v-btn>
           </v-col>
@@ -115,6 +114,7 @@ export default {
   data() {
     return {
       requestSuccess: null,
+      color: "indigo",
       requestResponse: null,
       loginLoading: false,
       registerLoading: false,
@@ -215,9 +215,6 @@ export default {
             instance.requestResponse = response.data.message;
 
             if (response.data.success) {
-
-              // console.log(response.data.user)
-
               instance.$store.dispatch("auth");
               instance.$store.commit("setUserDetails", response.data.user);
               instance.$openSocket();
@@ -232,7 +229,7 @@ export default {
             console.log(err);
           }
         );
-    },
+    }
   },
 
   created() {
