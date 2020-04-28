@@ -7,7 +7,7 @@
       </v-toolbar>
 
       <v-form ref="form" v-model="valid" lazy-validation>
-        <v-row no-gutters class="px-6 pt-6 pb-4">
+        <v-row no-gutters class="px-6 pt-6">
           <!-- Warning message -->
           <v-col v-if="requestSuccess == false" cols="12" align="center">
             <p class="red--text title">{{ requestResponse }}</p>
@@ -67,7 +67,7 @@
           </v-col>
 
           <!-- Sign in button -->
-          <v-col cols="4" align="start" justify="center" class="py-4 mt-2">
+          <v-col cols="4" align="start" justify="center" class="pt-4">
             <!-- Sign In button -->
             <v-btn
               :class=" signup ? 'move login' : (loginLoading ? 'moveback login glow' :'moveback login') "
@@ -79,7 +79,7 @@
           </v-col>
 
           <!-- Loading -->
-          <v-col cols="4" align="center" justify="center" class="py-4 mt-2">
+          <v-col cols="4" align="center" justify="center" class="py-4">
             <!-- Loading animation -->
             <div
               :class=" loginLoading ? 'lds-ellipsis movebackLoading' : (registerLoading ? 'lds-ellipsis movebackLoadingReg' : 'd-none')"
@@ -92,7 +92,7 @@
           </v-col>
 
           <!-- Sign up button -->
-          <v-col cols="4" align="end" class="py-4 mt-2 register">
+          <v-col cols="4" align="end" class="pt-4 register">
             <v-btn
               :class="signup ? (registerLoading ? 'move register glow' : 'move register') : 'moveback register'"
               rounded
@@ -103,6 +103,15 @@
           </v-col>
         </v-row>
       </v-form>
+
+      <v-row no-gutters class="pt-6 pb-4" justify="center">
+        <!--  -->
+        <div v-for="(icon, idx) in social" :key="idx" class="px-2">
+          <v-btn large icon :class="signup ? 'move social' : 'moveback login'">
+            <v-icon :color="icon.color">{{ icon.icon }} </v-icon>
+          </v-btn>
+        </div>
+      </v-row>
     </v-card>
   </v-container>
 </template>
@@ -114,6 +123,11 @@ export default {
   data() {
     return {
       requestSuccess: null,
+      social: [
+        {name: "Twitter", icon: 'mdi-twitter', color: 'blue'},
+        {name: "Google", icon: 'mdi-google', color: 'red'},
+        {name: "Facebook", icon: 'mdi-facebook', color: 'blue'},
+      ],
       color: "indigo",
       requestResponse: null,
       loginLoading: false,
@@ -255,7 +269,8 @@ export default {
 $move: 0.65s;
 
 .login,
-.register {
+.register,
+.social {
   -webkit-transition: background-color 1s;
   -ms-transition: background-color 1s;
   transition: background-color 1s;
