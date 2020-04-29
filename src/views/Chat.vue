@@ -68,7 +68,15 @@
 
             <!-- Chats list layout -->
             <v-layout d-flex column class="list">
-              <v-list subheader>
+              <v-row v-if="!chats.length" no-gutters align="center">
+                <v-col align="center">
+                  <v-card flat>
+                    <v-card-subtitle class="welcome"> Find users and chat </v-card-subtitle>
+                    <v-img src="@/assets/icons/talk.svg" height="100" width="100"></v-img>
+                  </v-card>
+                </v-col>
+              </v-row>
+              <v-list v-if="chats.length" subheader>
                 <v-subheader>Single chats</v-subheader>
 
                 <v-list-item v-for="(chat, idx) in chats" :key="idx" @click="activate(idx)">
@@ -178,6 +186,20 @@
               </v-card>
             </v-row>
           </v-card>
+
+          <v-row
+            v-if="typeof activeChat.participants == 'undefined'"
+            align="center"
+            no-gutters
+            class="fill-height"
+          >
+            <v-col align="center">
+              <v-card flat>
+                <v-card-subtitle class="welcome">Start a conversation</v-card-subtitle>
+                <v-img src="@/assets/icons/chat.svg" height="100" width="100"></v-img>
+              </v-card>
+            </v-col>
+          </v-row>
         </v-col>
       </v-row>
     </v-card>
@@ -381,6 +403,10 @@ export default {
 $margin: 8px;
 $rightBubble: #0277bd;
 $leftBubble: #f5f5f5;
+
+.welcome {
+  font-size: 18px;
+}
 
 .class-list {
   max-height: 80px;

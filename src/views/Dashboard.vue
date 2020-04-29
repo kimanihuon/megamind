@@ -84,9 +84,9 @@
             </v-btn>
 
             <!-- Add one -->
-            <v-btn medium icon color="grey" @click="addOne()">
+            <!-- <v-btn medium icon color="grey" @click="addOne()">
               <v-icon medium>mdi-plus-circle-outline</v-icon>
-            </v-btn>
+            </v-btn> -->
           </v-row>
         </v-card>
       </v-col>
@@ -95,7 +95,10 @@
     <!-- Get started button -->
     <v-row v-if="tracks.length < 1" no-gutters align="center" class="fill-height">
       <v-col align="center">
-        <p>Create a track to get started</p>
+        <v-card flat max-width="500" color="transparent">
+          <v-card-subtitle class="welcome">Create a track to get started</v-card-subtitle>
+          <v-img src="@/assets/icons/people.svg" height="200" width="200"></v-img>
+        </v-card>
       </v-col>
     </v-row>
   </v-container>
@@ -224,6 +227,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.welcome {
+  font-size: 20px;
+}
+
 .block-title {
   font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
   font-size: 16px;

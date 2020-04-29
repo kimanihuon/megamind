@@ -72,7 +72,7 @@
 
           <v-row no-gutters justify="center" class="pb-2">
             <v-card-actions>
-              <v-btn color="indigo" @click="trackAdder = false, createTrack()">
+              <v-btn color="indigo" :loading="loading" @click="createTrack()">
                 create
                 <v-icon>mdi-plus-thick</v-icon>
               </v-btn>
@@ -120,11 +120,14 @@
 </template>
 
 <script>
+import apiClient from "../controllers/api";
+
 export default {
   name: "Dashboard",
   components: {},
   data() {
     return {
+      loading: false,
       drawer: true,
       track: {
         name: "",
@@ -172,10 +175,7 @@ export default {
         });
     },
     createTrack() {
-      // *TODO: database call to create track
-      var track = JSON.parse(JSON.stringify(this.track));
-      this.$store.commit("createTrack", track);
-      this.track.name = "";
+      apiClient.createTrack(this, window)
     }
   },
 

@@ -1,6 +1,15 @@
 <template>
   <v-container fluid>
     <v-row no-gutters class="pa-4">
+      <v-dialog v-model="saving" hide-overlay persistent width="300">
+        <v-card color="indigo" dark>
+          <v-card-text>
+            Saving ...
+            <v-progress-linear indeterminate color="white" class="mb-0"></v-progress-linear>
+          </v-card-text>
+        </v-card>
+      </v-dialog>
+
       <!-- Blocks input -->
       <v-col cols="12" sm="6">
         <v-card class="pa-2 mx-2 sheet">
@@ -103,6 +112,7 @@
 import blocksTemplate from "../components/blocksTemplate";
 import trackstatuschips from "../components/trackStatusChips";
 import previewDraggableBlocks from "../components/draggableBlocks";
+import apiClient from "../controllers/api";
 
 export default {
   props: ["save", "track", "idx"],
@@ -123,6 +133,7 @@ export default {
       drag: false,
       selection: 0,
       loading: false,
+      saving: false,
       sizes: ["large", "medium", "small"],
       tags: ["Url/Link", "Notes", "Files", "Task"],
       // column: {
@@ -219,29 +230,7 @@ export default {
 
   watch: {
     save() {
-      var instance = this;
-      this.$http
-        .create({ withCredentials: true })
-        .post(`${this.$api}/api/track`, this.column)
-        .then(function(response) {
-          if (response.data.success === true) {
-            if (!instance.column._id) {
-              instance.column._id = response.data.trackid;
-            }
-            instance.$store.commit("saveTrack", {
-              column: instance.column,
-              index: instance.index
-            });
-            // *TODO: Database call
-            instance.$emit("saved", true);
-          } else {
-            window.alert("Oops! something happened. You might offline");
-          }
-        })
-        .catch(function(error) {
-          console.log(error);
-          window.alert("Oops! something happened. You might offline");
-        });
+      apiClient.save(this, window);
     },
     track(track) {
       this.column = JSON.parse(JSON.stringify(track));
@@ -254,7 +243,6 @@ export default {
 </script>
 
 <style lang="css" scoped>
-
 .f-color {
   color: black;
 }
