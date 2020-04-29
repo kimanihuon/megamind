@@ -15,6 +15,7 @@ Vue.use(VueChatScroll);
 Vue.prototype.$api = (process.env.VUE_APP_ENV ? 'http://localhost:5443' : 'https://weskool.team:5443' );
 Vue.prototype.$uploads = (process.env.VUE_APP_ENV ? 'http://localhost:6443' : 'https://weskool.team:6443' );
 Vue.prototype.$downloads = (process.env.VUE_APP_ENV ? 'http://localhost:7443' : 'https://weskool.team:7443' );
+Vue.config.devtools=false
 
 // Add axios to the global object
 Vue.prototype.$http = axios;
