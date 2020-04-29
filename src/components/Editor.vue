@@ -37,7 +37,7 @@ export default {
 
       this.$http
         .create({ withCredentials: true })
-        .post("http://localhost:6443/upload", formData, {
+        .post(`${this.$uploads}/upload`, formData, {
           headers: {
             "Content-Type": "multipart/form-data"
           }

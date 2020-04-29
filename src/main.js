@@ -12,11 +12,17 @@ Vue.use(VueChatScroll);
 // Registering global component
 // Vue.component('link-prevue', LinkPrevue)
 
+Vue.prototype.$api = (process.env.VUE_APP_ENV ? 'http://localhost:5443' : 'https://weskool.team:5443' );
+Vue.prototype.$uploads = (process.env.VUE_APP_ENV ? 'http://localhost:6443' : 'https://weskool.team:6443' );
+Vue.prototype.$downloads = (process.env.VUE_APP_ENV ? 'http://localhost:7443' : 'https://weskool.team:7443' );
+
 // Add axios to the global object
 Vue.prototype.$http = axios;
 Vue.config.productionTip = false;
 Vue.prototype.$openSocket = function () {
-  Vue.prototype.$socket = io.connect("http://localhost:5443");
+
+  // Main socket path
+  Vue.prototype.$socket = io.connect(Vue.prototype.$api);
 
   var socket = this.$socket;
 
@@ -48,7 +54,7 @@ var requested = window.location.pathname;
 
 // Verify login status
 Vue.prototype.$http.create({ withCredentials: true })
-  .post("http://localhost:5443/api/login/verify")
+  .post(`${Vue.prototype.$api}/api/login/verify`)
   .then(response => {
     // console.log(response)
     if (response.data.authorized) {

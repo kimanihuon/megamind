@@ -74,7 +74,7 @@ export default {
         var instance = this;
         this.$http
           .create({ withCredentials: true })
-          .post("http://localhost:5443/api/track/delete", { _id: this.column._id })
+          .post(`${this.$api}/api/track/delete`, { _id: this.column._id })
           .then(function(response) {
             if (response.data.success === true) {
               

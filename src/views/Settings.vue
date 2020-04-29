@@ -3,7 +3,6 @@
     <v-switch v-model="miniDrawer" :label="`Drawer mini: ${ miniDrawer ? 'On' : 'Off' }`"></v-switch>
     <v-switch v-model="expandHover" :label="`Expand on hover: ${ expandHover ? 'On' : 'Off' }`"></v-switch>
     <v-switch v-model="darkMode" :label="`Enable dark mode: ${ darkMode ? 'On' : 'Off' }`"></v-switch>
-
   </v-container>
 </template>
 
@@ -12,19 +11,23 @@
 export default {
   name: "Settings",
 
-  components: {
-
+  metaInfo: {
+    title: "Site settings",
+    titleTemplate: "%s | Weskool learning path sharing",
+    meta: [
+      { charset: "utf-8" },
+      { name: "description", content: "Weskool Login" },
+      { name: "viewport", content: "width=device-width, initial-scale=1" }
+    ]
   },
+
+  components: {},
 
   data() {
-    return {
-            
-    };
+    return {};
   },
 
-  methods: {
-
-  },
+  methods: {},
 
   computed: {
     // Using computed setter and getters

@@ -107,8 +107,8 @@
       <v-row no-gutters class="pt-6 pb-4" justify="center">
         <!--  -->
         <div v-for="(icon, idx) in social" :key="idx" class="px-2">
-          <v-btn large icon :class="signup ? 'move social' : 'moveback login'">
-            <v-icon :color="icon.color">{{ icon.icon }} </v-icon>
+          <v-btn large icon :class="signup ? 'move social' : 'moveback login'" @click="log()">
+            <v-icon :color="icon.color">{{ icon.icon }}</v-icon>
           </v-btn>
         </div>
       </v-row>
@@ -120,13 +120,25 @@
 import router from "../router/index";
 
 export default {
+  name: "login",
+
+  metaInfo: {
+    title: "Login",
+    titleTemplate: "%s | Weskool learning path sharing",
+    meta: [
+      { charset: "utf-8" },
+      { name: "description", content: "Weskool Login" },
+      { name: "viewport", content: "width=device-width, initial-scale=1" }
+    ]
+  },
+
   data() {
     return {
       requestSuccess: null,
       social: [
-        {name: "Twitter", icon: 'mdi-twitter', color: 'blue'},
-        {name: "Google", icon: 'mdi-google', color: 'red'},
-        {name: "Facebook", icon: 'mdi-facebook', color: 'blue'},
+        { name: "Twitter", icon: "mdi-twitter", color: "blue" },
+        { name: "Google", icon: "mdi-google", color: "red" },
+        { name: "Facebook", icon: "mdi-facebook", color: "blue" }
       ],
       color: "indigo",
       requestResponse: null,
@@ -156,6 +168,10 @@ export default {
   },
 
   methods: {
+    log() {
+
+    },
+
     login() {
       // Start loading
       this.loginLoading = true;
@@ -172,7 +188,7 @@ export default {
       // Solves problem of invalid csrf token using: withCredentials: true
       this.$http
         .create({ withCredentials: true })
-        .post("http://localhost:5443/api/login", {
+        .post(`${this.$api}/api/login`, {
           username: this.username,
           password: this.password
         })
@@ -217,7 +233,7 @@ export default {
 
       this.$http
         .create({ withCredentials: true })
-        .post("http://localhost:5443/api/register", {
+        .post(`${this.$api}/api/register`, {
           username: this.username,
           email: this.email,
           password: this.password
@@ -250,7 +266,7 @@ export default {
     // Solves problem of invalid csrf token using: withCredentials: true
     this.$http
       .create({ withCredentials: true })
-      .get("http://localhost:5443/api/access")
+      .get(`${this.$api}/api/access`)
       .then(
         response => {
           response;

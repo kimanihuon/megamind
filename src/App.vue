@@ -22,7 +22,7 @@ export default {
   name: "App",
 
   components: {
-    Nav,
+    Nav
   },
 
   data: () => ({
@@ -32,14 +32,15 @@ export default {
 
   computed: {
     auth() {
-      // Whether user is logged in 
+      // Whether user is logged in
       return this.$store.state.auth;
-    },
+    }
   },
 
   mounted() {
     this.$vuetify.theme.dark = this.$store.state.darkMode;
   }
+  
 };
 </script>
 
@@ -47,5 +48,4 @@ export default {
 .content {
   padding: 0px 0px 0px;
 }
-
 </style>

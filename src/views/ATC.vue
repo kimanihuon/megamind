@@ -20,6 +20,16 @@ import "dropzone/dist/dropzone.css";
 export default {
   name: "atc",
 
+  metaInfo: {
+    title: "ATC",
+    titleTemplate: "%s | Weskool learning path sharing",
+    meta: [
+      { charset: "utf-8" },
+      { name: "description", content: "Weskool Login" },
+      { name: "viewport", content: "width=device-width, initial-scale=1" }
+    ]
+  },
+
   components: {},
 
   data() {

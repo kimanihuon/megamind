@@ -139,6 +139,18 @@
 
 <script>
 export default {
+  name: "Profile",
+
+  metaInfo: {
+    title: "Personal profile",
+    titleTemplate: "%s | Weskool learning path sharing",
+    meta: [
+      { charset: "utf-8" },
+      { name: "description", content: "Weskool Login" },
+      { name: "viewport", content: "width=device-width, initial-scale=1" }
+    ]
+  },
+
   data() {
     return {
       self: this.$store.state.self,
@@ -175,7 +187,7 @@ export default {
       };
       this.$http
         .create({ withCredentials: true })
-        .post("http://localhost:5443/api/update", {
+        .post(`${this.$api}/api/update`, {
           fields: fields
         })
         .then(

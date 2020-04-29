@@ -188,6 +188,18 @@ import vemojipicker from "v-emoji-picker";
 import moment from "moment";
 
 export default {
+  name: "Chat",
+
+  metaInfo: {
+    title: "Chat and resource sharing",
+    titleTemplate: "%s | Weskool learning path sharing",
+    meta: [
+      { charset: "utf-8" },
+      { name: "description", content: "Weskool Login" },
+      { name: "viewport", content: "width=device-width, initial-scale=1" }
+    ]
+  },
+
   data() {
     return {
       timeout: "",

@@ -120,6 +120,16 @@ import trackstatuschips from "../components/trackStatusChips";
 export default {
   name: "Dashboard",
 
+  metaInfo: {
+    title: "Dashboard and learning tracks",
+    titleTemplate: "%s | Weskool learning path sharing",
+    meta: [
+      { charset: "utf-8" },
+      { name: "description", content: "Weskool Login" },
+      { name: "viewport", content: "width=device-width, initial-scale=1" }
+    ]
+  },
+
   components: {
     draggable,
     blockCreator,
@@ -190,16 +200,14 @@ export default {
 
   mounted() {
     this.$store.subscribe((mutation, state) => {
-      if (mutation.type === "saveTrack" || mutation.type === "createTrack"  ) {
+      if (mutation.type === "saveTrack" || mutation.type === "createTrack") {
         this.editableTracks = JSON.parse(JSON.stringify(state.self.tracks));
-      } 
+      }
 
-      if (mutation.type === "deleteTrack"  ) {
-        console.log('boom')
+      if (mutation.type === "deleteTrack") {
+        console.log("boom");
         this.editableTracks = JSON.parse(JSON.stringify(state.self.tracks));
-      } 
-
-
+      }
     });
     // console.log(this.$store.state.self)
   },

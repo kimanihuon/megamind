@@ -151,7 +151,7 @@ export default {
 
       this.$http
         .create({ withCredentials: true })
-        .post("http://localhost:5443/api/logout")
+        .post(`${this.$api}/api/logout`)
         .then(function(response) {
           if (response.data.success === true) {
             instance.$socket.emit("logout", instance.$store.state.self._id);

@@ -222,7 +222,7 @@ export default {
       var instance = this;
       this.$http
         .create({ withCredentials: true })
-        .post("http://localhost:5443/api/track", this.column)
+        .post(`${this.$api}/api/track`, this.column)
         .then(function(response) {
           if (response.data.success === true) {
             if (!instance.column._id) {

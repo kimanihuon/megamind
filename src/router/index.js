@@ -2,8 +2,14 @@ import Vue from "vue";
 import VueRouter from "vue-router";
 import store from "../store/index";
 import Login from "../views/Login";
+import VueMeta from 'vue-meta';
 
+Vue.use(VueMeta, {
+  keyName: 'metaInfo',
+  refreshOnceOnNavigation: true
+});
 Vue.use(VueRouter);
+
 
 const routes = [
   {
@@ -15,25 +21,26 @@ const routes = [
   {
     path: "/dashboard",
     name: "dashboard",
-    component: () => import(/* webpackChunkName: "dashboard" */ "../views/Dashboard.vue")
+    component: () => import(/* webpackChunkName: "dashboard" */ "../views/Dashboard.vue"),
   },
 
   {
     path: "/chat",
     name: "chat",
-    component: () => import(/* webpackChunkName: "dashboard" */ "../views/Chat.vue")
+    component: () => import(/* webpackChunkName: "dashboard" */ "../views/Chat.vue"),
   },
 
   {
     path: "/settings",
     name: "settings",
-    component: () => import(/* webpackChunkName: "dashboard" */ "../views/Settings.vue")
+    component: () => import(/* webpackChunkName: "dashboard" */ "../views/Settings.vue"),
   },
 
   {
     path: "/profile",
     name: "profile",
-    component: () => import(/* webpackChunkName: "dashboard" */ "../views/Profile.vue")
+    component: () => import(/* webpackChunkName: "dashboard" */ "../views/Profile.vue"),
+
   },
 
   {
