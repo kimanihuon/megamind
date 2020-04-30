@@ -2,7 +2,6 @@
   <div>
     <v-dialog v-model="frameState">
       <v-app-bar color="deep-purple accent-4" dense dark>
-        
         <v-toolbar-title>iFrame Page</v-toolbar-title>
 
         <v-spacer></v-spacer>
@@ -211,8 +210,15 @@ export default {
     },
     openIframe: function() {
       var str = this.url;
+      var url = new URL(this.url);
+
       if (this.youtubeCheck) {
-        var res = str.replace("com/watch?v=", "com/embed/");
+        var list = url.searchParams.get("list");
+        if (list) {
+          var res = `https://www.youtube.com/embed/videoseries?list=${list}`;
+        } else {
+          var res = str.replace("com/watch?v=", "com/embed/");
+        }
       }
 
       this.site = res;
