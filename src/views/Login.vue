@@ -1,6 +1,6 @@
 <template>
   <v-container class="fill-height d-flex justify-center align-center">
-    <v-card class="mx-auto" width="420">
+    <v-card class="mx-auto" width="420" height="520">
       <!-- Banner -->
       <v-toolbar :color="color" dark flat class="d-flex justify-center">
         <v-toolbar-title>WESKOOL</v-toolbar-title>
@@ -104,14 +104,13 @@
         </v-row>
       </v-form>
 
-      <v-row no-gutters class="pt-6 pb-4" justify="center">
-        <!--  -->
+      <!-- <v-row no-gutters class="pt-6 pb-4" justify="center">
         <div v-for="(icon, idx) in social" :key="idx" class="px-2">
           <v-btn large icon :class="signup ? 'move social' : 'moveback login'" @click="log()">
             <v-icon :color="icon.color">{{ icon.icon }}</v-icon>
           </v-btn>
         </div>
-      </v-row>
+      </v-row> -->
     </v-card>
   </v-container>
 </template>

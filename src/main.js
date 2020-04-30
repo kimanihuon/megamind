@@ -66,9 +66,13 @@ Vue.prototype.$http.create({ withCredentials: true })
       Vue.prototype.$openSocket()
 
       if (requested == "/login") {
-        router.push({ path: `/dashboard` })
+        router.push({ path: `/dashboard` }).catch(e => {
+          console.log(e)
+        })
       } else {
-        router.push({ path: `${requested}` })
+        router.push({ path: `${requested}` }).catch(e => {
+          console.log(e)
+        })
       }
     } else {
       store.dispatch("deauth");

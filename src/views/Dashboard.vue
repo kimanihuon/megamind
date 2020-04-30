@@ -27,7 +27,7 @@
         v-for="(column, cidx) in editableTracks"
         :key="cidx"
         cols="12"
-        sm="4"
+        sm="6"
         :md="navDrawer.state ? 4 : 3"
         class="py-4 px-4"
       >
