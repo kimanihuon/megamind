@@ -108,21 +108,38 @@
             <v-col align="center">
               <v-img src="@/assets/back.png" alt="profile image" class="img" max-height="550">
                 <!-- Profile with hover effect -->
-                <v-hover>
-                  <template v-slot:default="{ hover }">
-                    <v-avatar class="profile mt-4" color="grey" size="150">
-                      <v-img src="@/assets/profile/profile.jpg"></v-img>
-                      <v-fade-transition>
-                        <v-overlay v-if="hover" absolute color="#036358">
-                          <!-- Implement picture upload -->
-                          <v-btn fab text>
-                            <v-icon>mdi-image-edit</v-icon>
-                          </v-btn>
-                        </v-overlay>
-                      </v-fade-transition>
-                    </v-avatar>
+
+                <!-- Edit picture menu -->
+                <v-menu v-model="showMenu" absolute offset-y style="max-width: 600px">
+                  <template v-slot:activator="{ on }">
+                    <!-- Picture with hove effect -->
+                    <v-hover>
+                      <template v-slot:default="{ hover }">
+
+                        <!-- Main picture avatar -->
+                        <v-avatar v-on="on" class="profile mt-4" color="grey" size="150" @click="log()">
+                          <v-img :src="self.avatar"></v-img>
+
+                          <!-- Fad transition and button -->
+                          <v-fade-transition>
+                            <v-overlay v-if="hover" absolute color="#036358">
+                              <!-- Implement picture upload -->
+                              <v-btn x-large fab text>
+                                <v-icon>mdi-image-edit</v-icon>
+                              </v-btn>
+                            </v-overlay>
+                          </v-fade-transition>
+                        </v-avatar>
+                      </template>
+                    </v-hover>
                   </template>
-                </v-hover>
+
+                  <v-list>
+                    <v-list-item v-for="(item, index) in items" :key="index" @click="log()">
+                      <v-list-item-title>{{ item.title }}</v-list-item-title>
+                    </v-list-item>
+                  </v-list>
+                </v-menu>
 
                 <v-card-subtitle class="pb-0 title">{{ name }}</v-card-subtitle>
 
@@ -154,6 +171,11 @@ export default {
   data() {
     return {
       self: this.$store.state.self,
+      showMenu: false,
+      items: [
+        { title: "Upload" },
+        { title: "Delete" }
+      ],
       dialog: false,
       hover: false,
       valid: false,
@@ -210,7 +232,8 @@ export default {
             console.log(err);
           }
         );
-    }
+    },
+    log() {}
   }
 };
 </script>

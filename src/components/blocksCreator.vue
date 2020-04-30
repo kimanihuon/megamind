@@ -1,6 +1,7 @@
 <template>
   <v-container fluid>
     <v-row no-gutters class="pa-4">
+      <!-- Saving dialog -->
       <v-dialog v-model="saving" hide-overlay persistent width="300">
         <v-card color="indigo" dark>
           <v-card-text>

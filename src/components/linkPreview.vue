@@ -1,5 +1,6 @@
 <template>
   <div>
+    <!-- Dialog with embeded sites -->
     <v-dialog v-model="frameState">
       <v-app-bar color="deep-purple accent-4" dense dark>
         <v-toolbar-title>iFrame Page</v-toolbar-title>
@@ -22,8 +23,20 @@
       </iframe>
     </v-dialog>
 
+    <!-- Main card -->
     <v-card :max-width="cardWidth" color="#263238" class="mx-auto pa-2 pt-1">
       <v-row no-gutters justify="end">
+        
+        <!-- Youtube Playlist icon -->
+        <v-tooltip v-if="playlistCheck() && youtubeCheck()" right>
+          <template v-slot:activator="{ on }">
+            <v-icon color="red" v-on="on">mdi-playlist-play</v-icon>
+          </template>
+          <span>Youtube playlist</span>
+        </v-tooltip>      
+
+        <v-spacer></v-spacer>
+
         <v-btn icon>
           <v-icon>mdi-share</v-icon>
         </v-btn>
@@ -142,6 +155,8 @@ export default {
 
   data() {
     return {
+      showTooltip: false,
+      playlist: false,
       response: null,
       validUrl: false,
       frameState: false,
@@ -208,14 +223,24 @@ export default {
       const regex = /^(https?\:\/\/)?((www\.)?youtube\.com|youtu\.?be)\/.+$/;
       return regex.test(this.url);
     },
+    playlistCheck() {
+      var url = new URL(this.url);
+      var list = url.searchParams.get("list");
+      if (list) {
+        return `https://www.youtube.com/embed/videoseries?list=${list}`;
+      } else {
+        return false;
+      }
+    },
     openIframe: function() {
       var str = this.url;
-      var url = new URL(this.url);
 
       if (this.youtubeCheck) {
-        var list = url.searchParams.get("list");
+        var list = this.playlistCheck();
+
+        // Youtube embed playlist check
         if (list) {
-          var res = `https://www.youtube.com/embed/videoseries?list=${list}`;
+          var res = list;
         } else {
           var res = str.replace("com/watch?v=", "com/embed/");
         }

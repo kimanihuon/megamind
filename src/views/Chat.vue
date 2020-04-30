@@ -68,6 +68,8 @@
 
             <!-- Chats list layout -->
             <v-layout d-flex column class="list">
+
+              <!-- Place holder for empty chats -->
               <v-row v-if="!chats.length" no-gutters align="center">
                 <v-col align="center">
                   <v-card flat>
@@ -76,6 +78,8 @@
                   </v-card>
                 </v-col>
               </v-row>
+
+              <!-- chats actual -->
               <v-list v-if="chats.length" subheader>
                 <v-subheader>Single chats</v-subheader>
 

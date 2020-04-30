@@ -61,23 +61,21 @@ export default {
         { title: "Edit", icon: "mdi-circle-edit-outline" },
         { title: "Share", icon: "mdi-share-variant" },
         { title: "Delete", icon: "mdi-trash-can-outline" },
-        { title: "Duplicate", icon: "mdi-content-duplicate" }
+        // { title: "Duplicate", icon: "mdi-content-duplicate" }
       ],
       chipColor: "indigo",
       chipColorArchive: "red"
     };
   },
   methods: {
-    log() {},
-    action(title) {
-      if (title === "Delete") {
+    action(name) {
+      if (name === "Delete") {
         var instance = this;
         this.$http
           .create({ withCredentials: true })
           .post(`${this.$api}/api/track/delete`, { _id: this.column._id })
           .then(function(response) {
             if (response.data.success === true) {
-              
               instance.$store.commit("deleteTrack", {
                 _id: instance.column._id,
                 index: instance.index
@@ -91,6 +89,9 @@ export default {
             console.log(error);
             window.alert("Oops! something happened. You might be offline");
           });
+      }
+      if (name === "Edit") {
+        this.$emit("toggle", {column: this.column, index: this.index});
       }
     }
   }

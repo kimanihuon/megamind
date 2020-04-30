@@ -36,7 +36,7 @@
           <!-- Track header -->
 
           <!-- Active and archived blocks buttons -->
-          <trackstatuschips :column="column" :index="cidx"></trackstatuschips>
+          <trackstatuschips :column="column" :index="cidx" @toggle="toggle(...arguments)"></trackstatuschips>
 
           <!-- Track title -->
           <v-row no-gutters>
@@ -171,6 +171,9 @@ export default {
   },
 
   methods: {
+    toggle(args) {
+      this.activateColumn(args.column, args.index);
+    },
     log: function(evt) {
       window.console.log(evt);
     },
