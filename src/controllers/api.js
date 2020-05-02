@@ -1,5 +1,5 @@
 
-class saveTrack {
+class api {
     constructor() { }
 
     // Sve function
@@ -59,4 +59,4 @@ class saveTrack {
 }
 
 
-export default new saveTrack;
+export default new api;
