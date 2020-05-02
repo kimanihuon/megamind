@@ -85,7 +85,7 @@
 
                 <v-list-item v-for="(chat, idx) in chats" :key="idx" @click="activate(idx)">
                   <v-list-item-avatar size="48">
-                    <v-img :src="chat.participants[1].avatar"></v-img>
+                    <v-img :src="chat.participants[0].username == self.username ? chat.participants[1].avatar : chat.participants[0].avatar"></v-img>
                   </v-list-item-avatar>
 
                   <v-list-item-content>
@@ -116,8 +116,8 @@
             <v-toolbar color dense>
               <v-row no-gutters justify="start" align="center">
                 <!-- Tool bar icon -->
-                <v-avatar color="teal" size="40" class="mr-4">
-                  <v-img :src="activeChat.participants[1].avatar"></v-img>
+                <v-avatar size="40" class="mr-4">
+                  <v-img :src="activeChat.participants[0].username == self.username ? activeChat.participants[1].avatar : activeChat.participants[0].avatar"></v-img>
                 </v-avatar>
                 <v-toolbar-title>{{ activeChat.participants[0].username == self.username ? activeChat.participants[1].username : activeChat.participants[0].username }}</v-toolbar-title>
               </v-row>
@@ -191,6 +191,7 @@
             </v-row>
           </v-card>
 
+          <!-- If no chosen site -->
           <v-row
             v-if="typeof activeChat.participants == 'undefined'"
             align="center"
@@ -335,29 +336,31 @@ export default {
       this.$store.commit("selectChat", idx);
     },
     send() {
-      var message = this.$store.state.chat.activeChat.messageStructure;
+
+      var chat = this.$store.state.chat.activeChat;
       var instance = this;
 
       // chat index
-      if (message.contents.text !== null) {
+      if (chat.messageStructure.contents.text && chat.messageStructure.contents.text.length > 0) {
+
         // Temporarily store the message to trim()
-        var temp = message.contents.text;
+        var temp = chat.messageStructure.contents.text;
         temp = temp.trim();
         if (temp.length > 0) {
           // Check if it's an existing chat
-          if (message._id) {
+          if (chat._id) {
             this.$store.commit("insertTimestamp");
             var messageObj = JSON.parse(
-              JSON.stringify(instance.$store.state.chat.activeChat)
+              JSON.stringify(chat)
             );
-
-            messageObj.messageStructure.from = this.self._id;
 
             // If the first participant is self then send to the other participant, else send to the first
             messageObj.messageStructure.to =
               this.self._id == messageObj.participants[0]._id
                 ? messageObj.participants[1]._id
                 : messageObj.participants[0]._id;
+
+            messageObj.messageStructure.from = this.self._id;
 
             delete messageObj.messages;
             delete messageObj.messageStructure._id;
