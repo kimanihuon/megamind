@@ -147,7 +147,7 @@
                         <v-avatar
                           v-on="on"
                           class="profile mt-4"
-                          color="grey"
+                          color="#212121"
                           size="150"
                           @click="log()"
                         >
