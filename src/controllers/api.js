@@ -2,7 +2,7 @@
 class api {
     constructor() { }
 
-    // Sve function
+    // Save function
     save(instance, window) {
         instance.saving = true;
         instance.$http
@@ -55,7 +55,6 @@ class api {
                 window.alert("Oops! something happened. You might offline");
             });
     }
-
 }
 
 

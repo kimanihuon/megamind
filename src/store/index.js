@@ -214,6 +214,10 @@ export default new Vuex.Store({
 
     changeDrawerState(state) {
       state.navDrawer.state = !state.navDrawer.state
+    },
+
+    updateProfileImage(state, url) {
+      state.self.avatar = url;
     }
 
   },

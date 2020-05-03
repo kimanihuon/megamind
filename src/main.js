@@ -78,10 +78,10 @@ Vue.prototype.$http.create({ withCredentials: true })
       store.dispatch("deauth");
     }
   })
-  .catch(function (error) {
+  .catch(function (error) { // eslint-disable-line
     store.dispatch("deauth");
     // handle error
-    console.log(error);
+    // console.log(error);
   })
 
 new Vue({

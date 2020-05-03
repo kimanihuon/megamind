@@ -1,6 +1,34 @@
 <template>
   <v-container>
     <v-row no-gutters justify="space-around">
+      <v-dialog max-width="400" v-model="uploadDialog">
+        <!-- <file-pond
+            class="filepond"
+            ref="pond"
+            labelButtonRemoveItem
+            label-idle="Drop image here..."
+            accepted-file-types="image/jpeg, image/png"
+            multiple
+            data-max-file-size="3MB"
+            v-bind:files="myFiles"
+            v-on:init="handleFilePondInit"
+            v-on:addfile="handleFilePondAddFile"
+        />-->
+
+        <file-pond
+          type="file"
+          class="filepond"
+          name="filepond"
+          data-max-file-size="3MB"
+          ref="pond"
+          label-idle="Drop image here..."
+          accepted-file-types="image/jpeg, image/png"
+          v-bind:server="myServer"
+          v-bind:files="myFiles"
+          v-on:init="handleFilePondInit"
+        />
+      </v-dialog>
+
       <!-- User details -->
       <v-col cols="12" sm="12" md="7" class="pa-0 mt-4 mb-2">
         <v-card class="px-3" shaped>
@@ -115,9 +143,14 @@
                     <!-- Picture with hove effect -->
                     <v-hover>
                       <template v-slot:default="{ hover }">
-
                         <!-- Main picture avatar -->
-                        <v-avatar v-on="on" class="profile mt-4" color="grey" size="150" @click="log()">
+                        <v-avatar
+                          v-on="on"
+                          class="profile mt-4"
+                          color="grey"
+                          size="150"
+                          @click="log()"
+                        >
                           <v-img :src="self.avatar"></v-img>
 
                           <!-- Fad transition and button -->
@@ -135,7 +168,11 @@
                   </template>
 
                   <v-list>
-                    <v-list-item v-for="(item, index) in items" :key="index" @click="log()">
+                    <v-list-item
+                      v-for="(item, index) in items"
+                      :key="index"
+                      @click="action(item.title)"
+                    >
                       <v-list-item-title>{{ item.title }}</v-list-item-title>
                     </v-list-item>
                   </v-list>
@@ -155,6 +192,23 @@
 </template>
 
 <script>
+// Import FilePond
+import vueFilePond from "vue-filepond";
+
+// Import plugins
+import FilePondPluginFileValidateType from "filepond-plugin-file-validate-type/dist/filepond-plugin-file-validate-type.esm.js";
+import FilePondPluginImagePreview from "filepond-plugin-image-preview/dist/filepond-plugin-image-preview.esm.js";
+
+// Import styles
+import "filepond/dist/filepond.min.css";
+import "filepond-plugin-image-preview/dist/filepond-plugin-image-preview.min.css";
+
+// Create FilePond component
+const FilePond = vueFilePond(
+  FilePondPluginFileValidateType,
+  FilePondPluginImagePreview
+);
+
 export default {
   name: "Profile",
 
@@ -168,14 +222,103 @@ export default {
     ]
   },
 
+  components: {
+    FilePond
+  },
+
   data() {
     return {
       self: this.$store.state.self,
-      showMenu: false,
-      items: [
-        { title: "Upload" },
-        { title: "Delete" }
+      myServer: {
+        load: (source, load, error) => {
+          var myRequest = new Request(source);
+          fetch(myRequest)
+            .then(function(response) {
+              response.blob().then(function(myBlob) {
+                load(myBlob);
+              });
+            })
+            .catch(e => {
+              error(e);
+            });
+        },
+        process: (fieldName, file, metadata, load, error, progress) => {
+          // set data
+          const formData = new FormData();
+          formData.append("file", file, file.name);
+
+          // related to aborting the request
+          const CancelToken = this.$http.CancelToken;
+          const source = CancelToken.source();
+
+          // the request itself
+          this.$http({
+            method: "post",
+            url: `${this.$uploads}/upload` + "?" + (new URLSearchParams({profile: true})).toString(),
+            data: formData,
+            withCredentials: true,
+            cancelToken: source.token,
+            onUploadProgress: e => {
+              // updating progress indicator
+              progress(e.lengthComputable, e.loaded, e.total);
+            }
+          })
+            .then(response => {
+              // passing the file id to FilePond
+              load(response.data.image);
+              this.updateImage(response.data.url);
+            })
+            .catch(thrown => {
+              if (this.$http.isCancel(thrown)) {
+                console.log("Request canceled", thrown.message);
+              } else {
+                // handle error
+              }
+            });
+
+          // Setup abort interface
+          return {
+            abort: () => {
+              source.cancel("Operation canceled by the user.");
+            }
+          };
+        },
+        revert: (uniqueField, load, error) => {
+          this.$http({
+            method: "delete",
+            url: `${this.$uploads}/delete` + "?" + (new URLSearchParams({profile: true})).toString(),
+            data: { file: uniqueField },
+            withCredentials: true
+          })
+            .then(response => {
+              if (response.data.success === true) {
+                console.log("Success");
+                this.updateImage("https://weskool.team:7443/images/social.svg")
+                // Should call the load method when done, no parameters required
+                load();
+              }
+            })
+            .catch(e => {
+              // Can call the error method if something is wrong, should exit after
+              error("oh my goodness: " + e);
+            });
+        }
+      },
+      viewPicture: false,
+      myFiles: [
+        {
+          // the server file reference
+          source: this.$store.state.self.avatar,
+
+          // set type to local to indicate an already uploaded file
+          options: {
+            type: "local"
+          }
+        }
       ],
+      showMenu: false,
+      items: [{ title: "Edit" }, { title: "View" }],
+      uploadDialog: false,
       dialog: false,
       hover: false,
       valid: false,
@@ -233,12 +376,37 @@ export default {
           }
         );
     },
-    log() {}
+    handleFilePondInit: function() {
+      console.log("FilePond has initialized");
+
+      // FilePond instance methods are available on `this.$refs.pond`
+    },
+    action(option) {
+      if (option === "Edit") {
+        this.uploadDialog = true;
+      } else if (option === "View") {
+        this.viewPicture = true;
+      }
+    },
+    updateImage(url){
+      this.$store.commit("updateProfileImage", url)
+    },
+    log() {
+      
+    }
+  },
+
+  created() {
+    // console.log(this.self.avatar)
   }
 };
 </script>
 
 <style lang="scss" scoped>
+.filepond--drop-label {
+  color: #4c4e53;
+}
+
 .img {
   border-radius: 1.5%;
 }
