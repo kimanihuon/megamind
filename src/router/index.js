@@ -27,19 +27,19 @@ const routes = [
   {
     path: "/chat",
     name: "chat",
-    component: () => import(/* webpackChunkName: "dashboard" */ "../views/Chat.vue"),
+    component: () => import(/* webpackChunkName: "chat" */ "../views/Chat.vue"),
   },
 
   {
     path: "/settings",
     name: "settings",
-    component: () => import(/* webpackChunkName: "dashboard" */ "../views/Settings.vue"),
+    component: () => import(/* webpackChunkName: "settings" */ "../views/Settings.vue"),
   },
 
   {
     path: "/profile",
     name: "profile",
-    component: () => import(/* webpackChunkName: "dashboard" */ "../views/Profile.vue"),
+    component: () => import(/* webpackChunkName: "profile" */ "../views/Profile.vue"),
 
   },
 

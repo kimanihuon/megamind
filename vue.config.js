@@ -1,5 +1,8 @@
 module.exports = {
   chainWebpack: config => {
+    devServer: {
+      port: 8080
+    }
     config
       .plugin('html')
       .tap(args => {
