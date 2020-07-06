@@ -3,7 +3,7 @@ const BundleAnalyzerPlugin = require('webpack-bundle-analyzer')
 
 const CompressionPlugin = require('compression-webpack-plugin')
 
-odule.exports = {
+module.exports = {
   "configureWebpack": {
     plugins: [new CompressionPlugin,],
     optimization: {
