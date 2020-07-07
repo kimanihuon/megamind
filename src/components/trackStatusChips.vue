@@ -4,7 +4,7 @@
     <v-row no-gutters align="center">
       <!-- Active blocks button -->
       <v-chip
-        class="my-2 mx-2"
+        class="my-2 mx-1 px-1"
         :color="column.active ? chipColor : chipColorArchive"
         :outlined="!column.active ? true : false"
         text-color="white"
@@ -18,7 +18,7 @@
 
       <!-- Archived blocks button -->
       <v-chip
-        class="my-2"
+        class="my-2 mx-1 px-1"
         :color="column.active ? chipColor : chipColorArchive"
         :outlined="column.active ? true : false"
         text-color="white"

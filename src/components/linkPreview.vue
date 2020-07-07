@@ -121,7 +121,7 @@ export default {
   props: {
     url: {
       type: String,
-      default: ""
+      default: "https://www.youtube.com/watch?v=jNQXAC9IVRw"
     },
 
     cardWidth: {

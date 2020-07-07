@@ -136,7 +136,9 @@ export default {
       loading: false,
       saving: false,
       sizes: ["large", "medium", "small"],
-      tags: ["Url/Link", "Notes", "Files", "Task"],
+
+      // Remember maybe file
+      tags: ["Url/Link", "Notes", "Task"],
       // column: {
       //   name: "Homework",
       //   active: true,
@@ -144,13 +146,13 @@ export default {
       // },
       // Block template
       urlBlockTemplate: {
-        name: "",
-        url: { state: true, value: "https://" },
+        name: "Title",
+        url: { state: true, value: "https://www.youtube.com/watch?v=jNQXAC9IVRw" },
         active: true,
         size: "medium"
       },
       notesBlockTemplate: {
-        name: "",
+        name: "Title",
         notes: true,
         content: "",
         active: true,
@@ -158,13 +160,13 @@ export default {
       },
 
       filesBlockTemplate: {
-        name: "",
+        name: "Title",
         files: true,
         active: true
       },
 
       taskBlockTemplate: {
-        name: "",
+        name: "Title",
         description: "",
         task: true,
         active: true

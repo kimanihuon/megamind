@@ -9,8 +9,16 @@ Vue.use(VueMeta, {
 });
 Vue.use(VueRouter);
 
+var dashboard = () => import(/* webpackChunkName: "dashboard" */ "../views/Dashboard.vue");
 
 const routes = [
+
+  {
+    path: "/",
+    name: "root",
+    component: dashboard
+  },
+
   {
     path: "/login",
     name: "login",
@@ -20,7 +28,7 @@ const routes = [
   {
     path: "/dashboard",
     name: "dashboard",
-    component: () => import(/* webpackChunkName: "dashboard" */ "../views/Dashboard.vue"),
+    component: dashboard
   },
 
   {
@@ -69,9 +77,7 @@ const router = new VueRouter({
 
 router.beforeEach((to, from, next) => {
 
-  if (store.state.auth && to.path == '/') {
-    next('/dashboard')
-  } else if (store.state.auth && to.path == '/login') {
+   if (store.state.auth && to.path == '/login') {
     next('/dashboard')
   } else if (store.state.auth) {
     next()

@@ -26,9 +26,9 @@
       <v-col
         v-for="(column, cidx) in editableTracks"
         :key="cidx"
-        cols="12"
+        cols="10"
         sm="6"
-        :md="navDrawer.state ? 4 : 3"
+        md="3"
         class="py-4 px-4"
       >
         <!-- Card main card -->
@@ -102,16 +102,6 @@
       </v-col>
     </v-row>
   </v-container>
-
-  <!-- <iframe
-    v-if="item.src"
-    width="280"
-    height="147"
-    src="https://www.youtube.com/embed/videoseries?list=PLx0sYbCqOb8TBPRdmBHs5Iftvv9TPboYG"
-    frameborder="0"
-    allow="autoplay; encrypted-media"
-    allowfullscreen
-  ></iframe>-->
 </template>
 
 <script>
