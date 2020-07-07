@@ -9,9 +9,6 @@ import VueChatScroll from "vue-chat-scroll";
 
 Vue.use(VueChatScroll);
 
-// Registering global component
-// Vue.component('link-prevue', LinkPrevue)
-
 Vue.prototype.$api = (process.env.VUE_APP_ENV ? 'http://localhost:5443' : 'https://weskool.team:5443' );
 Vue.prototype.$uploads = (process.env.VUE_APP_ENV ? 'http://localhost:6443' : 'https://weskool.team:6443' );
 Vue.prototype.$downloads = (process.env.VUE_APP_ENV ? 'http://localhost:7443' : 'https://weskool.team:7443' );
@@ -80,8 +77,6 @@ Vue.prototype.$http.create({ withCredentials: true })
   })
   .catch(function (error) { // eslint-disable-line
     store.dispatch("deauth");
-    // handle error
-    // console.log(error);
   })
 
 new Vue({

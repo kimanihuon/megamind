@@ -110,7 +110,7 @@
             <v-icon :color="icon.color">{{ icon.icon }}</v-icon>
           </v-btn>
         </div>
-      </v-row> -->
+      </v-row>-->
     </v-card>
   </v-container>
 </template>
@@ -167,9 +167,7 @@ export default {
   },
 
   methods: {
-    log() {
-
-    },
+    log() {},
 
     login() {
       // Start loading
@@ -261,21 +259,7 @@ export default {
     }
   },
 
-  created() {
-    // Solves problem of invalid csrf token using: withCredentials: true
-    this.$http
-      .create({ withCredentials: true })
-      .get(`${this.$api}/api/access`)
-      .then(
-        response => {
-          response;
-          // console.log(response);
-        },
-        err => {
-          console.log(err);
-        }
-      );
-  }
+  created() {}
 };
 </script>
 
