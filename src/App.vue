@@ -4,9 +4,9 @@
     <Nav v-if="auth"></Nav>
 
     <!-- View -->
-    <v-content v-if="auth || !auth && path == '/login'" style="padding-top: 24px;">
+    <v-main v-if="auth || !auth && path == '/login'" style="padding-top: 24px;">
       <router-view></router-view>
-    </v-content>
+    </v-main>
 
     <!-- Footer -->
     <v-footer v-if="!auth" app>
