@@ -82,7 +82,7 @@
               <v-list v-if="chats.length" subheader>
                 <v-subheader>Single chats</v-subheader>
 
-                <v-list-item v-for="(chat, idx) in chats" :key="idx" @click="activate(idx)">
+                <v-list-item v-for="(chat, idx) in chats" :key="idx" @click="activate(idx, chat._id)">
                   <v-list-item-avatar size="48">
                     <v-img
                       :src="chat.participants[0].username == self.username ? chat.participants[1].avatar : chat.participants[0].avatar"
@@ -343,9 +343,12 @@ export default {
         this.$store.commit("makeActive", user);
       }
     },
-    activate(idx) {
+    activate(idx, chatId) {
       // Set the index of the chat we want to display
       this.$store.commit("selectChat", idx);
+
+      // Update chat seen database state
+      this.socket.emit("markSeen", {chatId: chatId, index: idx});
     },
     send() {
       var chat = this.$store.state.chat.activeChat;
@@ -413,7 +416,14 @@ export default {
         .format("h:mm a")
         .toUpperCase();
     }
+  },
+
+  mounted() {
+    if(this.$route.query.chatIdx) {
+      this.activate(this.$route.query.chatIdx)
+    }
   }
+
 };
 </script>
 

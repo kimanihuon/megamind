@@ -54,6 +54,14 @@ Vue.prototype.$openSocket = function () {
     sound.play()
   });
 
+  // TODO: Use this logic for read receipts
+  socket.on("markSeenResponse", function (response) {
+    // console.log(response)
+    if (response.success == true) {
+      store.commit("updateChatStatus", response.data )
+    }
+  })
+
 }
 
 // The requested pathname by the user

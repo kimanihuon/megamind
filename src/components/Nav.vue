@@ -34,7 +34,6 @@
       <v-spacer></v-spacer>
 
       <!-- Nav bar buttons -->
-
       <!-- Add track icon -->
       <v-menu
         v-model="trackAdder"
@@ -73,7 +72,6 @@
           <v-row no-gutters justify="center" class="pb-2">
             <v-card-actions>
               <v-btn color="indigo" :loading="loading" @click="createTrack()">
-                create
                 <v-icon>mdi-plus-thick</v-icon>
               </v-btn>
             </v-card-actions>
@@ -81,24 +79,34 @@
         </v-card>
       </v-menu>
 
-      <!-- Add task icon -->
-      <v-btn icon color="indigo">
-        <v-icon>mdi-filter</v-icon>
-      </v-btn>
-
       <!-- Notifications icon -->
-      <v-menu
-        v-model="notifications"
-        :close-on-content-click="false"
-        :nudge-width="200"
-        absolute
-        offset-y
-      >
-        <template v-slot:activator="{ on }">
-          <v-btn icon color v-on="on">
-            <v-icon>mdi-bell</v-icon>
+      <v-menu v-if="path !== '/chat'" offset-y>
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn icon color v-on="on" v-bind="attrs">
+            <v-badge
+              :content="chatNotifications.length"
+              :value="chatNotifications.length > 0"
+              color="purple"
+              overlap
+            >
+              <v-icon>mdi-bell</v-icon>
+            </v-badge>
           </v-btn>
         </template>
+
+        <v-list v-if="chatNotifications.length > 0">
+          <chatPreview></chatPreview>
+          <div class="d-flex justify-center">
+            <v-btn class="ma-2" outlined color="red" small @click="clearNotifications()">Clear</v-btn>
+          </div>
+        </v-list>
+
+        <!-- When there are no new notifications -->
+        <v-list>
+          <v-list-item v-if="chatNotifications.length < 1">
+            <v-list-item-subtitle>No new notifications</v-list-item-subtitle>
+          </v-list-item>
+        </v-list>
       </v-menu>
 
       <!-- Options icon -->
@@ -124,7 +132,10 @@ import apiClient from "../controllers/api";
 
 export default {
   name: "Dashboard",
-  components: {},
+  components: {
+    chatPreview: () =>
+      import(/* webpackChunkName: "chatPreview" */ "./chat/chatPreview")
+  },
   data() {
     return {
       loading: false,
@@ -144,7 +155,7 @@ export default {
       hints: true,
       x: 0,
       y: 0,
-      icons: this.$store.state.navIcons
+      icons: this.$store.state.navIcons,
     };
   },
 
@@ -175,7 +186,10 @@ export default {
         });
     },
     createTrack() {
-      apiClient.createTrack(this, window)
+      apiClient.createTrack(this, window);
+    },
+    clearNotifications() {
+      this.$store.commit("clearNotifications");
     }
   },
 
@@ -188,6 +202,12 @@ export default {
     },
     expandOnHover() {
       return this.$store.state.expandOnHover;
+    },
+    chatNotifications() {
+      return this.$store.state.notifications.chat;
+    },
+    path() {
+      return this.$route.path
     }
   },
 

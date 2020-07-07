@@ -38,6 +38,9 @@ export default new Vuex.Store({
       // Active chat
       activeChat: {},
 
+      // chat index tracker
+      chatIndexCache: {},
+
       // Default chat structure
       struct: {
         messageStructure: { to: "", from: null, contents: { text: "", image: [], timestamp: "" } },
@@ -45,7 +48,11 @@ export default new Vuex.Store({
         messages: []
       },
     },
-
+    notifications: {
+      chat: [],
+      chatIdCache: {},
+      tracks: []
+    }
   },
   mutations: {
     authenticate(state) {
@@ -124,6 +131,18 @@ export default new Vuex.Store({
       state.chat.activeChat = structure;
     },
 
+    // Clear notifications
+    clearNotifications(state) {
+      state.notifications.chat.length = 0;
+      state.notifications.chatIdCache = {};
+    },
+
+    // Update chat status
+    updateChatStatus(state, chatDetails) {
+      state.self.chats[chatDetails.index].seen = true;
+      state.self.chats[chatDetails.index].unread = 0;
+    },
+
     // Insert timestamp to chat
     insertTimestamp(state) {
       state.chat.activeChat.messageStructure.contents.timestamp = Date.now();
@@ -147,7 +166,11 @@ export default new Vuex.Store({
     },
 
     receiveChat(state, chat) {
-      state.self.chats.push(chat)
+      state.self.chats.unshift(chat)
+      state.notifications.chat.unshift(chat)
+
+      // cache the chat ID so as not to flood array
+      state.notifications.chatIdCache[chat._id] = true
     },
 
     updateChat(state, payload) {
@@ -168,7 +191,16 @@ export default new Vuex.Store({
 
           // Increment counter
           state.self.chats[i].unread += 1
+          state.self.chats[i].seen = false
           state.self.chats[i].messages.push(message.messageStructure)
+
+          // console.log(state.self.chats)
+
+          // If message hasn't already been saved
+          if (!state.notifications.chatIdCache[state.self.chats[i]._id]) {
+            state.notifications.chat.unshift(state.self.chats[i])
+            state.notifications.chatIdCache[state.self.chats[i]._id] = true
+          }
           break
         }
       }
