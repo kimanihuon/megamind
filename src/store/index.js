@@ -11,18 +11,6 @@ export default new Vuex.Store({
     dash: {
       color: "#263238",
       colors: ["#1A237E", "#1B5E20", "#FF4081", "#673AB7", "#455A64", "#263238"],
-      classes: [{ id: 1, name: "Networking" }, { id: 2, name: "Operating Systems" }, { id: 3, name: "Software Engineering" }, { id: 4, name: "Data Structures" }, { id: 5, name: "Linear Algebra" }],
-      assignments: [{ id: 1, due: "1/4/2020", name: "Functions of CPU" }, { id: 1, due: "1/4/2020", name: "Matrices" }, { id: 1, due: "1/4/2020", name: "Network structures" }],
-      messages: [{ id: 1, name: "Jimmy", message: "Hi", status: false, time: 11223445, media: "" }, { name: "Jane", message: "New assignment", status: true, time: 11223445, media: "" }],
-      friends: [{ id: 1, name: "John Doe", username: "jdoe11", email: "doe@mail.com", number: "0789654321" }, { id: 2, name: "Jane Doe", username: "jdoe11", email: "doe@mail.com", number: "0789654321" }],
-      people: [{ id: 1, name: "Elon Musk", username: "jdoe11", email: "doe@mail.com", number: "0789654321" }, { id: 2, name: "Kylian Mbappe", username: "jdoe11", email: "doe@mail.com", number: "0789654321" }],
-      notifications: [{ id: 1, name: "New message", type: "messages", }],
-      columns: [
-        { name: "Homework", active: false, items: [{ name: 'Walkthrough', src: "https://www.youtube.com/embed?v=OC93pNSrRP8" }, { id: 1, name: "John Doe", username: "jdoe11", email: "doe@mail.com", number: "0789654321" }] },
-        { name: "Assignments", active: true, items: [{ id: 1, name: "Elon Musk", username: "jdoe11", email: "doe@mail.com", number: "0789654321" }, { id: 2, name: "Kylian Mbappe", username: "jdoe11", email: "doe@mail.com", number: "0789654321" }] },
-        { name: "Meetings", active: true, items: [{ id: 1, name: "New message", type: "messages", }, { id: 1, name: "Networking" }, { id: 2, name: "Operating Systems" }, { id: 3, name: "Software Engineering" }, { id: 4, name: "Data Structures" }, { id: 5, name: "Linear Algebra" }] },
-        { name: "Music", active: false, items: [{ id: 1, name: "Future", type: "messages", }, { id: 1, name: "Sean paul" }, { id: 2, name: "Miley cyrus" }, { id: 3, name: "Beyonce" }] },
-      ]
     },
     tracks: [],
     navIcons: [
@@ -158,8 +146,8 @@ export default new Vuex.Store({
 
     },
 
-    receiveChat(state, payload) {
-      state.self.chats.push(payload)
+    receiveChat(state, chat) {
+      state.self.chats.push(chat)
     },
 
     updateChat(state, payload) {
@@ -171,10 +159,16 @@ export default new Vuex.Store({
       state.chat.activeChat.messageStructure.contents.timestamp = '';
     },
 
-    newMessage(state, payload) {
+    newMessage(state, message) {
+
+      // console.log(state.self.chats)
+
       for (let i = 0; i < state.self.chats.length; i++) {
-        if (payload._id == state.self.chats[i]._id) {
-          state.self.chats[i].messages.push(payload.messageStructure)
+        if (message._id == state.self.chats[i]._id) {
+
+          // Increment counter
+          state.self.chats[i].unread += 1
+          state.self.chats[i].messages.push(message.messageStructure)
           break
         }
       }

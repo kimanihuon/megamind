@@ -1,7 +1,6 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
 import store from "../store/index";
-import Login from "../views/Login";
 import VueMeta from 'vue-meta';
 
 Vue.use(VueMeta, {
@@ -15,7 +14,7 @@ const routes = [
   {
     path: "/login",
     name: "login",
-    component: () =>import(/* webpackChunkName: login */ "../views/Login.vue")
+    component: () =>import(/* webpackChunkName: "login" */ "../views/Login.vue")
   },
 
   {

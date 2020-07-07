@@ -68,12 +68,11 @@
 
             <!-- Chats list layout -->
             <v-layout d-flex column class="list">
-
               <!-- Place holder for empty chats -->
               <v-row v-if="!chats.length" no-gutters align="center">
                 <v-col align="center">
                   <v-card flat>
-                    <v-card-subtitle class="welcome"> Find users and chat </v-card-subtitle>
+                    <v-card-subtitle class="welcome">Find users and chat</v-card-subtitle>
                     <v-img src="@/assets/icons/talk.svg" height="100" width="100"></v-img>
                   </v-card>
                 </v-col>
@@ -85,8 +84,13 @@
 
                 <v-list-item v-for="(chat, idx) in chats" :key="idx" @click="activate(idx)">
                   <v-list-item-avatar size="48">
-                    <v-img :src="chat.participants[0].username == self.username ? chat.participants[1].avatar : chat.participants[0].avatar"></v-img>
+                    <v-img
+                      :src="chat.participants[0].username == self.username ? chat.participants[1].avatar : chat.participants[0].avatar"
+                    ></v-img>
                   </v-list-item-avatar>
+
+                  <!-- chat[0] is always the receiver and chat[1] is always the sender -->
+                  <!-- {{ chat.participants[0].username }} -->
 
                   <v-list-item-content>
                     <v-list-item-title
@@ -101,7 +105,13 @@
                   </v-list-item-content>
 
                   <v-list-item-icon>
-                    <v-icon :color="chat.active ? 'deep-purple accent-4' : 'grey'">mdi-chat-outline</v-icon>
+
+                    <!-- If there's an unread message and if it's not the sender -->
+                    <v-badge :content="chat.unread" :value="chat.unread > 0 && chat.participants[0].username !== self.username" color="blue" overlap >
+                      <v-icon
+                        :color="chat.seen ? 'grey' : 'deep-purple accent-4' "
+                      >mdi-chat-outline</v-icon>
+                    </v-badge>
                   </v-list-item-icon>
                 </v-list-item>
               </v-list>
@@ -117,7 +127,9 @@
               <v-row no-gutters justify="start" align="center">
                 <!-- Tool bar icon -->
                 <v-avatar size="40" class="mr-4">
-                  <v-img :src="activeChat.participants[0].username == self.username ? activeChat.participants[1].avatar : activeChat.participants[0].avatar"></v-img>
+                  <v-img
+                    :src="activeChat.participants[0].username == self.username ? activeChat.participants[1].avatar : activeChat.participants[0].avatar"
+                  ></v-img>
                 </v-avatar>
                 <v-toolbar-title>{{ activeChat.participants[0].username == self.username ? activeChat.participants[1].username : activeChat.participants[0].username }}</v-toolbar-title>
               </v-row>
@@ -336,13 +348,14 @@ export default {
       this.$store.commit("selectChat", idx);
     },
     send() {
-
       var chat = this.$store.state.chat.activeChat;
       var instance = this;
 
       // chat index
-      if (chat.messageStructure.contents.text && chat.messageStructure.contents.text.length > 0) {
-
+      if (
+        chat.messageStructure.contents.text &&
+        chat.messageStructure.contents.text.length > 0
+      ) {
         // Temporarily store the message to trim()
         var temp = chat.messageStructure.contents.text;
         temp = temp.trim();
@@ -350,9 +363,7 @@ export default {
           // Check if it's an existing chat
           if (chat._id) {
             this.$store.commit("insertTimestamp");
-            var messageObj = JSON.parse(
-              JSON.stringify(chat)
-            );
+            var messageObj = JSON.parse(JSON.stringify(chat));
 
             // If the first participant is self then send to the other participant, else send to the first
             messageObj.messageStructure.to =

@@ -6,6 +6,7 @@ import vuetify from "./plugins/vuetify";
 import axios from "axios";
 import io from "socket.io-client";
 import VueChatScroll from "vue-chat-scroll";
+import { Howl} from 'howler';
 
 Vue.use(VueChatScroll);
 
@@ -39,11 +40,18 @@ Vue.prototype.$openSocket = function () {
 
   socket.on("newMessage", function (chat) {
     store.commit("newMessage", chat)
+    var sound = new Howl({
+      src: require('./assets/sounds/newMessage.ogg')
+    })
+    sound.play()
   });
 
   socket.on("newChat", function (chat) {
     store.commit("receiveChat", chat )
-    
+    var sound = new Howl({
+      src: require('./assets/sounds/newChat.ogg')
+    })
+    sound.play()
   });
 
 }
