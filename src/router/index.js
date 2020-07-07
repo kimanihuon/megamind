@@ -15,7 +15,7 @@ const routes = [
   {
     path: "/login",
     name: "login",
-    component: Login
+    component: () =>import(/* webpackChunkName: login */ "../views/Login.vue")
   },
 
   {
@@ -46,7 +46,7 @@ const routes = [
   {
     path: "/atc",
     name: "atc",
-    component: () => import(/* webpackChunkName: "dashboard" */ "../views/ATC.vue")
+    component: () => import(/* webpackChunkName: "atc" */ "../views/ATC.vue")
   },
 
   // {

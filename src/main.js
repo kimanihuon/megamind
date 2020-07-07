@@ -43,6 +43,7 @@ Vue.prototype.$openSocket = function () {
 
   socket.on("newChat", function (chat) {
     store.commit("receiveChat", chat )
+    
   });
 
 }
