@@ -160,7 +160,8 @@ export default {
       response: null,
       validUrl: false,
       frameState: false,
-      site: ""
+      site: "",
+      fetched: false
     };
   },
   watch: {
@@ -171,7 +172,10 @@ export default {
     }
   },
   created() {
-    this.getLinkPreview();
+    if (!this.fetched) {
+      this.getLinkPreview();
+      this.fetched = true; 
+    }
   },
   methods: {
     viewMore: function() {
