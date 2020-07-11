@@ -6,7 +6,7 @@ import vuetify from "./plugins/vuetify";
 import axios from "axios";
 import io from "socket.io-client";
 import VueChatScroll from "vue-chat-scroll";
-import { Howl} from 'howler';
+import { Howl } from 'howler';
 
 Vue.use(VueChatScroll);
 
@@ -73,6 +73,8 @@ Vue.prototype.$http.create({ withCredentials: true })
   .then(response => {
     // console.log(response)
     if (response.data.authorized) {
+
+      console.log(response.data)
 
       store.commit("setUserDetails", response.data.details);
       store.dispatch("auth");

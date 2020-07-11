@@ -18,7 +18,7 @@
             <v-text-field
               :rules="nameRules"
               v-model="username"
-              :label="signup ? 'Username' : 'Username or Email'"
+              :label="signup ? 'Username' : 'Username'"
               outlined
               prepend-inner-icon="mdi-account"
             ></v-text-field>

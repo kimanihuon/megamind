@@ -19,6 +19,9 @@ export default new Vuex.Store({
     ],
     searchResults: [],
     self: {},
+    adminAuthorized: {
+      state: false
+    },
     selfMini: {},
     darkMode: true,
     miniDrawer: false,

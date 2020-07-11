@@ -326,8 +326,7 @@ export default {
       success: false,
       name: JSON.parse(JSON.stringify(this.$store.state.self.name)),
       username: JSON.parse(JSON.stringify(this.$store.state.self.username)),
-      about:
-        "Do not be scared of the truth because we need to restart the human foundation in truth And I love you like Kanye loves Kanye I love Rick Owens’ bed design but the back is",
+      about: JSON.parse(JSON.stringify(this.$store.state.self.about)),
       email: JSON.parse(JSON.stringify(this.$store.state.self.email)),
       phone: "0711222333",
       nameRules: [
