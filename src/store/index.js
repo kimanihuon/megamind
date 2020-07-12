@@ -19,8 +19,8 @@ export default new Vuex.Store({
     ],
     searchResults: [],
     self: {},
-    adminAuthorized: {
-      state: false
+    admin: {
+      authorized: false
     },
     selfMini: {},
     darkMode: true,
@@ -55,6 +55,28 @@ export default new Vuex.Store({
       chat: [],
       chatIdCache: {},
       tracks: []
+    },
+    summaries: {
+      users: {
+        retrieved: false,
+        value: 0,
+        time: ''
+      },
+      tracks: {
+        retrieved: false,
+        value: 0,
+        time: ''
+      },
+      chats: {
+        retrieved: false,
+        value: 0,
+        time: ''
+      },
+      online: {
+        retrieved: false,
+        value: 0,
+        time: ''
+      },
     }
   },
   mutations: {
@@ -247,6 +269,23 @@ export default new Vuex.Store({
 
     updateProfileImage(state, url) {
       state.self.avatar = url;
+    },
+
+    updateSummaries(state, summary) {
+      var summaryName = Object.keys(summary)[0]
+      var d = new Date();
+      state.summaries[summaryName].value = summary[summaryName];
+      state.summaries[summaryName].retrieved = true;
+      state.summaries[summaryName].time = d.getTime();
+
+    },
+
+    adminAuth(state) {
+      state.admin.authorized = true;
+    },
+
+    adminDeAuth(state) {
+      state.admin.authorized = false;
     }
 
   },
@@ -256,6 +295,12 @@ export default new Vuex.Store({
     },
     deauth(context) {
       context.commit('deauthenticate');
+    },
+    adminAuth(context) {
+      context.commit('adminAuth');
+    },
+    adminDeAuth(context) {
+      context.commit('adminDeAuth');
     }
   },
   modules: {},

@@ -33,6 +33,8 @@
       <v-toolbar-title>Weskool</v-toolbar-title>
       <v-spacer></v-spacer>
 
+      <v-btn class="px-2 mx-3" v-if="admin" small color="red" outlined to="/admin">Admin</v-btn>
+
       <!-- Nav bar buttons -->
       <!-- Add track icon -->
       <v-menu
@@ -156,6 +158,7 @@ export default {
       x: 0,
       y: 0,
       icons: this.$store.state.navIcons,
+      admin: this.$store.state.admin.authorized,
     };
   },
 

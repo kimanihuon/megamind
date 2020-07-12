@@ -60,6 +60,12 @@ Vue.prototype.$openSocket = function () {
     if (response.success == true) {
       store.commit("updateChatStatus", response.data )
     }
+  });
+
+  socket.on("summaries", function (response) {
+    if (response.success == true) {
+      store.commit("updateSummaries", response.data)
+    }
   })
 
 }
@@ -74,7 +80,11 @@ Vue.prototype.$http.create({ withCredentials: true })
     // console.log(response)
     if (response.data.authorized) {
 
-      console.log(response.data)
+      if (response.data.details.admin) {
+        store.dispatch("adminAuth")
+      } else {
+        store.dispatch("adminDeAuth")
+      }
 
       store.commit("setUserDetails", response.data.details);
       store.dispatch("auth");

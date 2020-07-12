@@ -197,6 +197,14 @@ export default {
 
             if (response.data.success) {
               // console.log(response.data.user)
+
+              // Check if admin
+              if (response.data.user.admin) {
+                instance.$store.dispatch("adminAuth");
+              } else {
+                instance.$store.dispatch("adminDeAuth");
+              }
+
               instance.$store.dispatch("auth");
               instance.$store.commit("setUserDetails", response.data.user);
               instance.$openSocket();
