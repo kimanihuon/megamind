@@ -2,6 +2,7 @@
   <v-container fluid class="pa-0 ma-0 fill-height">
     <!-- If tracks exists. Else -->
     <v-row no-gutters class="scroll" id="cscroll" v-if="tracks.length > 0">
+      <!-- Track editor dialog -->
       <v-dialog v-model="dialog" fullscreen hide-overlay transition="dialog-bottom-transition">
         <v-toolbar dense dark color="indigo">
           <v-btn icon dark @click="dialog = false">
@@ -15,6 +16,15 @@
         </v-toolbar>
         <v-card>
           <blockCreator :idx="dialogIndex" :track="dialogColumn" :save="save" @saved="trackSaved"></blockCreator>
+        </v-card>
+      </v-dialog>
+
+      <!-- User search dialog -->
+      <v-dialog v-model="userSearchDialog" max-width="600px">
+        <v-card class="px-2 pb-2">
+          <shareHeader></shareHeader>
+          <userSearch></userSearch>
+          <userTable></userTable>
         </v-card>
       </v-dialog>
 
@@ -36,7 +46,12 @@
           <!-- Track header -->
 
           <!-- Active and archived blocks buttons -->
-          <trackstatuschips :column="column" :index="cidx" @toggle="toggle(...arguments)"></trackstatuschips>
+          <trackstatuschips
+            :column="column"
+            :index="cidx"
+            @toggle="toggle(...arguments)"
+            @share="share(...arguments)"
+          ></trackstatuschips>
 
           <!-- Track title -->
           <v-row no-gutters>
@@ -86,7 +101,7 @@
             <!-- Add one -->
             <!-- <v-btn medium icon color="grey" @click="addOne()">
               <v-icon medium>mdi-plus-circle-outline</v-icon>
-            </v-btn> -->
+            </v-btn>-->
           </v-row>
         </v-card>
       </v-col>
@@ -127,7 +142,16 @@ export default {
     draggable,
     blockCreator,
     blocksTemplate,
-    trackstatuschips
+    trackstatuschips,
+    userSearch: () =>
+      import(
+        /* webpackChunkName: "userSearch" */ "../components/tracks/userSearch"
+      ),
+    userTable: () =>
+      import(
+        /* webpackChunkName: "userTable" */ "../components/tracks/userTable"
+      ),
+    shareHeader: () => import(/* webpackChunkName: "shareHeader */ "../components/tracks/shareHeader" )
   },
 
   data() {
@@ -137,6 +161,7 @@ export default {
       save: false,
       dialog: false,
       dialogColumn: {},
+      userSearchDialog: false,
       dialogIndex: 0,
       chipColor: "indigo",
       chipColorArchive: "red",
@@ -178,7 +203,11 @@ export default {
       this.dialogIndex = idx;
       this.dialog = true;
     },
-    addOne() {}
+    addOne() {},
+    share(track) {
+      this.userSearchDialog = true;
+      track;
+    }
   },
 
   created() {

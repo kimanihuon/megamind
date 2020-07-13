@@ -77,6 +77,23 @@ export default new Vuex.Store({
         value: 0,
         time: ''
       },
+    },
+    shareList: {
+      inserted: {},
+      selected: [],
+      headers: [
+        {
+          text: 'Avatar',
+          align: 'start',
+          sortable: false,
+          value: 'avatar',
+        },
+        {
+          text: 'Username',
+          value: 'username'
+        }
+      ],
+      users: []
     }
   },
   mutations: {
@@ -278,6 +295,15 @@ export default new Vuex.Store({
       state.summaries[summaryName].retrieved = true;
       state.summaries[summaryName].time = d.getTime();
 
+    },
+
+    updateShareUsers(state, value) {
+      state.shareList.selected = value
+    },
+
+    addToSharelist(state, user){
+      state.shareList.users.push(user);
+      state.shareList.inserted[user._id] = true;
     },
 
     adminAuth(state) {

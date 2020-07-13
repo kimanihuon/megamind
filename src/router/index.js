@@ -22,7 +22,7 @@ const routes = [
   {
     path: "/login",
     name: "login",
-    component: () =>import(/* webpackChunkName: "login" */ "../views/Login.vue")
+    component: () => import(/* webpackChunkName: "login" */ "../views/Login.vue")
   },
 
   {
@@ -62,6 +62,12 @@ const routes = [
     component: () => import(/* webpackChunkName: "admin" */ "../views/Admin.vue")
   },
 
+  {
+    path: "/tracks",
+    name: "tracks",
+    component: () => import(/* webpackChunkName: "tracks" */ "../views/Tracks.vue")
+  }
+
 
   // {
   //   path: "/about",
@@ -84,7 +90,7 @@ const router = new VueRouter({
 
 router.beforeEach((to, from, next) => {
 
-   if (store.state.auth && to.path == '/login') {
+  if (store.state.auth && to.path == '/login') {
     next('/dashboard')
   } else if (store.state.auth) {
     next()

@@ -93,6 +93,9 @@ export default {
       if (name === "Edit") {
         this.$emit("toggle", {column: this.column, index: this.index});
       }
+      if (name === "Share") {
+        this.$emit("share", { trackId: this.column._id })
+      }
     }
   }
 };
