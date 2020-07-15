@@ -82,7 +82,11 @@
               <v-list v-if="chats.length" subheader>
                 <v-subheader>Single chats</v-subheader>
 
-                <v-list-item v-for="(chat, idx) in chats" :key="idx" @click="activate(idx, chat._id)">
+                <v-list-item
+                  v-for="(chat, idx) in chats"
+                  :key="idx"
+                  @click="activate(idx, chat._id)"
+                >
                   <v-list-item-avatar size="48">
                     <v-img
                       :src="chat.participants[0].username == self.username ? chat.participants[1].avatar : chat.participants[0].avatar"
@@ -105,12 +109,14 @@
                   </v-list-item-content>
 
                   <v-list-item-icon>
-
                     <!-- If there's an unread message and if it's not the sender -->
-                    <v-badge :content="chat.unread" :value="chat.unread > 0 && chat.participants[0].username !== self.username" color="blue" overlap >
-                      <v-icon
-                        :color="chat.seen ? 'grey' : 'deep-purple accent-4' "
-                      >mdi-chat-outline</v-icon>
+                    <v-badge
+                      :content="chat.unread"
+                      :value="chat.unread > 0 && chat.participants[0].username !== self.username"
+                      color="blue"
+                      overlap
+                    >
+                      <v-icon :color="chat.seen ? 'grey' : 'deep-purple accent-4' ">mdi-chat-outline</v-icon>
                     </v-badge>
                   </v-list-item-icon>
                 </v-list-item>
@@ -151,14 +157,17 @@
                 >
                   <v-card
                     :class=" message.from == self._id ? 'mx-2 bubble' : 'mx-2 bubbleleft'"
-                    :color="message.from == self._id ? '#0277BD' : '#F5F5F5'"
+                    :color="message.from == self._id ? '#c1e3e1' : '#F5F5F5'"
                     max-width="500"
                     :id="message.from == self._id ? 'bubble' : 'bubbleleft' "
                   >
                     <v-row no-gutters align="start" class="bubble-child">
                       <v-card-subtitle
-                        :class=" message.from == self._id ? 'body-2 white--text' : 'body-2 black--text'"
-                      >{{ message.contents.text }}</v-card-subtitle>
+                        :class=" message.from == self._id ? 'body-2 black--text' : 'body-2 black--text'"
+                      >
+                        <span v-html="message.contents.text" v-if="regTest(message.contents.text)"></span>
+                        <span v-if="!regTest(message.contents.text)">{{ message.contents.text }}</span>
+                      </v-card-subtitle>
 
                       <v-col class="pa-0 ma-0">
                         <v-card-subtitle
@@ -348,7 +357,7 @@ export default {
       this.$store.commit("selectChat", idx);
 
       // Update chat seen database state
-      this.socket.emit("markSeen", {chatId: chatId, index: idx});
+      this.socket.emit("markSeen", { chatId: chatId, index: idx });
     },
     send() {
       var chat = this.$store.state.chat.activeChat;
@@ -380,6 +389,7 @@ export default {
             delete messageObj.messageStructure._id;
             delete messageObj.messageStructure.contents._id;
             this.socket.emit("send", messageObj);
+            this.$store.commit("clearMessageInput");
           } else {
             this.$store.commit("insertTimestamp");
             this.socket.emit("send", instance.$store.state.chat.activeChat);
@@ -415,22 +425,30 @@ export default {
       return moment(stamp)
         .format("h:mm a")
         .toUpperCase();
+    },
+    regTest(str) {
+      var patt = /<a href=/i;
+      if (str.match(patt)) {
+        return true;
+      } else {
+        return false;
+      }
     }
   },
 
   mounted() {
-    if(this.$route.query.chatIdx) {
-      this.activate(this.$route.query.chatIdx)
+    if (this.$route.query.chatIdx) {
+      this.activate(this.$route.query.chatIdx);
     }
   }
-
 };
 </script>
 
 <style lang="scss" scoped>
 $margin: 8px;
-$rightBubble: #0277bd;
+$rightBubble: #c1e3e1;
 $leftBubble: #f5f5f5;
+
 
 .welcome {
   font-size: 18px;

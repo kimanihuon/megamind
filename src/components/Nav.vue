@@ -176,13 +176,12 @@ export default {
             instance.$router.push({ name: "login" });
           } else {
             window.alert(
-              "Cannot logout, server configuration error. Try clearing your cookies"
+              "Cannot logout, server side error. Try clearing your cookies"
             );
           }
         })
         .catch(function(error) {
-          // console.log(error)
-          error;
+          console.log(error)
           window.alert(
             "Cannot logout, Browser error. Try clearing your cookies instead"
           );

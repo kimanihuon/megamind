@@ -10,20 +10,25 @@ import { Howl } from 'howler';
 
 Vue.use(VueChatScroll);
 
-Vue.prototype.$api = (process.env.VUE_APP_ENV ? 'http://localhost:5443' : 'https://weskool.team:5443' );
-Vue.prototype.$uploads = (process.env.VUE_APP_ENV ? 'http://localhost:6443' : 'https://weskool.team:6443' );
-Vue.prototype.$downloads = (process.env.VUE_APP_ENV ? 'http://localhost:7443' : 'https://weskool.team:7443' );
-Vue.config.devtools=false
+Vue.prototype.$api = (process.env.VUE_APP_ENV ? 'http://localhost:5443' : 'https://weskool.team:5443');
+Vue.prototype.$uploads = (process.env.VUE_APP_ENV ? 'http://localhost:6443' : 'https://weskool.team:6443');
+Vue.prototype.$downloads = (process.env.VUE_APP_ENV ? 'http://localhost:7443' : 'https://weskool.team:7443');
+Vue.config.devtools = false
 
 // Add axios to the global object
 Vue.prototype.$http = axios;
 Vue.config.productionTip = false;
+Vue.prototype.$socket = io.connect(Vue.prototype.$api);
 Vue.prototype.$openSocket = function () {
 
-  // Main socket path
-  Vue.prototype.$socket = io.connect(Vue.prototype.$api);
+  if (store.state.socketConnected) {
+    console.log("Web socket is already connected")
+    return
+  } 
 
   var socket = this.$socket;
+
+  store.commit("socketConnected");
 
   socket.on("response", function (response) {
     store.commit("insertResults", response);
@@ -33,8 +38,10 @@ Vue.prototype.$openSocket = function () {
   socket.on("sentResponse", function (response) {
     if (response.success === true && response.type == "new") {
       store.commit("createChat", response.data);
-    } else if (response.success === true && response.type == "existing") {
+    } else if (response.success === true && response.type == "existing" && response.intent == "newMessage") {
       store.commit("updateChat", response.data);
+    } else if (response.success === true && response.type == "existing" && response.intent == "newShare") {
+      store.commit("updateShare", { _id: response.chatId, message: response.data });
     }
   });
 
@@ -47,7 +54,7 @@ Vue.prototype.$openSocket = function () {
   });
 
   socket.on("newChat", function (chat) {
-    store.commit("receiveChat", chat )
+    store.commit("receiveChat", chat)
     var sound = new Howl({
       src: require('./assets/sounds/newChat.ogg')
     })
@@ -58,7 +65,7 @@ Vue.prototype.$openSocket = function () {
   socket.on("markSeenResponse", function (response) {
     // console.log(response)
     if (response.success == true) {
-      store.commit("updateChatStatus", response.data )
+      store.commit("updateChatStatus", response.data)
     }
   });
 
@@ -71,43 +78,6 @@ Vue.prototype.$openSocket = function () {
 }
 
 // The requested pathname by the user
-var requested = window.location.pathname;
-
-// Verify login status
-Vue.prototype.$http.create({ withCredentials: true })
-  .post(`${Vue.prototype.$api}/api/login/verify`)
-  .then(response => {
-    // console.log(response)
-    if (response.data.authorized) {
-
-      if (response.data.details.admin) {
-        store.dispatch("adminAuth")
-      } else {
-        store.dispatch("adminDeAuth")
-      }
-
-      store.commit("setUserDetails", response.data.details);
-      store.dispatch("auth");
-      // Websocket
-      Vue.prototype.$openSocket()
-
-      if (requested == "/login") {
-        router.push({ path: `/dashboard` }).catch(e => {
-          console.log(e)
-        })
-      } else {
-        router.push({ path: `${requested}` }).catch(e => {
-          console.log(e)
-        })
-      }
-    } else {
-      store.dispatch("deauth");
-    }
-  })
-  .catch(function (error) { // eslint-disable-line
-    store.dispatch("deauth");
-  })
-
 new Vue({
   router,
   store,

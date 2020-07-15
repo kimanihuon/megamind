@@ -1,3 +1,4 @@
+import axios from "axios"
 
 class api {
     constructor() { }
@@ -55,7 +56,37 @@ class api {
                 window.alert("Oops! something happened. You might offline");
             });
     }
+
 }
 
+function verify(url, store) {
+    // Verify login status
+    return axios.create({ withCredentials: true })
+        .post(`${url}/api/login/verify`)
+        .then(response => {
+            if (response.data.authorized) {
+
+                if (response.data.details.admin) {
+                    store.dispatch("adminAuth")
+                } else {
+                    store.dispatch("adminDeAuth")
+                }
+
+                store.commit("setUserDetails", response.data.details);
+                store.dispatch("auth");
+                return true;
+
+            } else {
+                store.dispatch("deauth");
+                return false;
+            }
+        })
+        .catch(function (error) { // eslint-disable-line
+            console.log(error)
+            return false;
+        })
+}
 
 export default new api;
+
+export { verify }

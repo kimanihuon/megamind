@@ -116,7 +116,6 @@
 </template>
 
 <script>
-import router from "../router/index";
 
 export default {
   name: "login",
@@ -182,6 +181,7 @@ export default {
       }
 
       var instance = this;
+      var router = this.$router;
       // Solves problem of invalid csrf token using: withCredentials: true
       this.$http
         .create({ withCredentials: true })
@@ -208,7 +208,7 @@ export default {
               instance.$store.dispatch("auth");
               instance.$store.commit("setUserDetails", response.data.user);
               instance.$openSocket();
-              router.push({ name: "dashboard" });
+              router.push({path: '/dashboard'})
             }
 
             // console.log(response);
@@ -235,6 +235,7 @@ export default {
       }
 
       var instance = this;
+      var router = this.$router;
 
       this.$http
         .create({ withCredentials: true })
@@ -253,7 +254,7 @@ export default {
               instance.$store.dispatch("auth");
               instance.$store.commit("setUserDetails", response.data.user);
               instance.$openSocket();
-              router.push({ name: "dashboard" });
+              router.push({path: '/dashboard'})
             }
             // console.log(response);
           },
@@ -267,7 +268,9 @@ export default {
     }
   },
 
-  created() {}
+  created() {
+    
+  }
 };
 </script>
 

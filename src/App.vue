@@ -4,7 +4,7 @@
     <Nav v-if="auth"></Nav>
 
     <!-- View -->
-    <v-main v-if="auth || !auth && path == '/login'" style="padding-top: 24px;">
+    <v-main style="padding-top: 24px;">
       <router-view></router-view>
     </v-main>
 

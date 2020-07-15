@@ -2,6 +2,9 @@ import Vue from "vue";
 import VueRouter from "vue-router";
 import store from "../store/index";
 import VueMeta from 'vue-meta';
+import Error404 from "../views/Error404.vue";
+import Login from "../views/Login.vue";
+import { verify } from "../controllers/api";
 
 Vue.use(VueMeta, {
   keyName: 'metaInfo',
@@ -9,75 +12,98 @@ Vue.use(VueMeta, {
 });
 Vue.use(VueRouter);
 
-var dashboard = () => import(/* webpackChunkName: "dashboard" */ "../views/Dashboard.vue");
+var dashboard = import(/* webpackChunkName: "dashboard" */ "../views/Dashboard.vue");
 
 const routes = [
-
   {
     path: "/",
-    name: "root",
-    component: dashboard
+    redirect: {
+      name: "login"
+    }
   },
 
   {
     path: "/login",
     name: "login",
-    component: () => import(/* webpackChunkName: "login" */ "../views/Login.vue")
+    component: Login,
+    meta: {
+      requiresGuest: true,
+    }
   },
 
   {
     path: "/dashboard",
     name: "dashboard",
-    component: dashboard
+    component: function () {
+      return dashboard;
+    },
+    meta: {
+      requiresAuth: true
+    }
   },
 
   {
     path: "/chat",
     name: "chat",
-    component: () => import(/* webpackChunkName: "chat" */ "../views/Chat.vue"),
+    component: function () {
+      return import(/* webpackChunkName: "chat" */ "../views/Chat.vue");
+    },
+    meta: {
+      requiresAuth: true
+    }
   },
 
   {
     path: "/settings",
     name: "settings",
-    component: () => import(/* webpackChunkName: "settings" */ "../views/Settings.vue"),
+    component: function () {
+      return import(/* webpackChunkName: "settings" */ "../views/Settings.vue");
+    },
+    meta: {
+      requiresAuth: true
+    }
   },
 
   {
     path: "/profile",
     name: "profile",
-    component: () => import(/* webpackChunkName: "profile" */ "../views/Profile.vue"),
+    component: function () {
+      return import(/* webpackChunkName: "profile" */ "../views/Profile.vue");
+    },
+    meta: {
+      requiresAuth: true
+    }
 
-  },
-
-  {
-    path: "/atc",
-    name: "atc",
-    component: () => import(/* webpackChunkName: "atc" */ "../views/ATC.vue")
   },
 
   {
     path: "/admin",
     name: "admin",
-    component: () => import(/* webpackChunkName: "admin" */ "../views/Admin.vue")
+    component: function () {
+      return import(/* webpackChunkName: "admin" */ "../views/Admin.vue");
+    },
+    meta: {
+      requiresAuth: true
+    }
   },
 
   {
     path: "/tracks",
     name: "tracks",
-    component: () => import(/* webpackChunkName: "tracks" */ "../views/Tracks.vue")
+    component: function () {
+      return import(/* webpackChunkName: "tracks" */ "../views/Tracks.vue")
+    },
+    meta: {
+      requiresAuth: false
+    }
+  },
+
+  {
+    path: '*',
+    name: '404',
+    component: Error404
   }
 
-
-  // {
-  //   path: "/about",
-  //   name: "About",
-  //   // route level code-splitting
-  //   // this generates a separate chunk (about.[hash].js) for this route
-  //   // which is lazy-loaded when the route is visited.
-  //   component: () =>
-  //     import(/* webpackChunkName: "about" */ "../views/About.vue")
-  // }
 ];
 
 const router = new VueRouter({
@@ -87,20 +113,54 @@ const router = new VueRouter({
   routes,
 });
 
-
 router.beforeEach((to, from, next) => {
-
-  if (store.state.auth && to.path == '/login') {
-    next('/dashboard')
-  } else if (store.state.auth) {
-    next()
-  } else if (!store.state.auth && to.path != '/login') {
-    next('/login')
-  } else if (!store.state.auth && to.path == '/login') {
-    next()
+  // Check for requiredAuth guard
+  if (to.matched.some(record => record.meta.requiresAuth)) {
+    verify(Vue.prototype.$api, store).then((res) => {
+      // Check if NOT logged in
+      if (!res === true) {
+        // Go to login page
+        next({
+          path: '/login',
+          query: {
+            redirect: to.fullPath
+          }
+        })
+      } else {
+        // Proceed to route
+        Vue.prototype.$openSocket()
+        next()
+      }
+    })
+  } else if (to.matched.some(record => record.meta.requiresGuest)) {
+    // Check if logged in
+    verify(Vue.prototype.$api, store, Vue).then((res) => {
+      // If logged in
+      if (res === true) {
+        // Go to dashboard
+        Vue.prototype.$openSocket()
+        next({
+          path: '/dashboard',
+          query: {
+            redirect: to.fullPath
+          }
+        })
+      } else {
+        // Proceed to route
+        next()
+      }
+    })
+  } else {
+    verify(Vue.prototype.$api, store).then((res) => {
+      // Check if NOT logged in
+      if (!res === true) {
+        next()
+      } else {
+        Vue.prototype.$openSocket()
+        next()
+      }
+    })
   }
-
 })
-
 
 export default router;

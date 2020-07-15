@@ -151,7 +151,7 @@ export default {
       import(
         /* webpackChunkName: "userTable" */ "../components/tracks/userTable"
       ),
-    shareHeader: () => import(/* webpackChunkName: "shareHeader */ "../components/tracks/shareHeader" )
+    shareHeader: () => import(/* webpackChunkName: "shareHeader" */ "../components/tracks/shareHeader" )
   },
 
   data() {

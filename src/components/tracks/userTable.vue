@@ -4,7 +4,7 @@
     :headers="headers"
     :items="users"
     :single-select="singleSelect"
-    item-key="name"
+    item-key="username"
     show-select
     class="elevation-1"
   >
@@ -30,7 +30,6 @@ export default {
         return this.$store.state.shareList.selected;
       },
       set(value) {
-        console.log(value);
         this.$store.commit("updateShareUsers", value);
       }
     },

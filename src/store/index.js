@@ -7,6 +7,7 @@ export default new Vuex.Store({
   strict: true,
   state: {
     auth: false,
+    socketConnected: false,
     navDrawer: { state: true },
     dash: {
       color: "#263238",
@@ -31,7 +32,7 @@ export default new Vuex.Store({
       { name: "Chat", icon: "mdi-chat", link: "/chat" },
       { name: "Profile", icon: "mdi-account", link: "/profile" },
       { name: "Settings", icon: "mdi-cog", link: "/settings" },
-      { name: "ATC", icon: "mdi-network", link: "/atc" }
+      { name: "Tracks", icon: "mdi-network", link: "/tracks" }
     ],
     chat: {
 
@@ -47,6 +48,8 @@ export default new Vuex.Store({
       // Default chat structure
       struct: {
         messageStructure: { to: "", from: null, contents: { text: "", image: [], timestamp: "" } },
+        seen: false,
+        unread: 0,
         participants: [],
         messages: []
       },
@@ -81,6 +84,7 @@ export default new Vuex.Store({
     shareList: {
       inserted: {},
       selected: [],
+      chatIndices: {},
       headers: [
         {
           text: 'Avatar',
@@ -147,6 +151,16 @@ export default new Vuex.Store({
 
       // Empty the text box
       chat.messageStructure.contents.text = null;
+    },
+
+    clearMessageInput(state){
+      state.chat.activeChat.messageStructure.contents.text = ''
+    },
+
+    // Web socket set connected
+    socketConnected(state){
+      console.log("Web socket is live")
+      state.socketConnected = true;
     },
 
     // Bind message text input to chat
@@ -222,6 +236,15 @@ export default new Vuex.Store({
       state.chat.activeChat.messageStructure.contents.text = '';
       state.chat.activeChat.messageStructure.contents.images = [];
       state.chat.activeChat.messageStructure.contents.timestamp = '';
+    },
+
+    updateShare(state, payload) {
+      for (let i = 0; i < state.self.chats.length; i++) {
+        if (state.self.chats[i]._id == payload._id) {
+          state.self.chats[i].messages.push(payload.message);
+          break;
+        }
+      }
     },
 
     newMessage(state, message) {
@@ -301,7 +324,7 @@ export default new Vuex.Store({
       state.shareList.selected = value
     },
 
-    addToSharelist(state, user){
+    addToSharelist(state, user) {
       state.shareList.users.push(user);
       state.shareList.inserted[user._id] = true;
     },
