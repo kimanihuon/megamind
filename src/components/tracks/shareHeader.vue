@@ -15,6 +15,7 @@
 
 <script>
 export default {
+  props: ['trackId'],
   methods: {
     send(user) {
       var chat = this.$store.state.chat.struct;
@@ -37,7 +38,7 @@ export default {
       }
       
       messageObj.messageStructure.contents.timestamp = Date.now();
-      messageObj.messageStructure.contents.text = `<a href="${this.$site}/tracks?id=${user._id}">${this.$site}/tracks?id=${user._id}</a>`;
+      messageObj.messageStructure.contents.text = `<a href="${this.$site}/tracks?id=${this.trackId}">${this.$site}/tracks?id=${this.trackId}</a>`;
       messageObj.intent = 'newShare'
 
       // If the first participant is self then send to the other participant, else send to the first
@@ -48,10 +49,16 @@ export default {
     },
     share() {
       var selected = this.$store.state.shareList.selected;
+      if (selected.length < 1) {
+        this.$emit('shared', { success: false, message: 'No user selected' })
+        return
+      }
       for (let i = 0; i < selected.length; i++) {
         this.send(selected[i])
       }
+      this.$emit('shared', { success: true })
     }
-  }
+  },
+  mounted(){}
 };
 </script>

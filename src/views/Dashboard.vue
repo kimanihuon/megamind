@@ -22,23 +22,34 @@
       <!-- User search dialog -->
       <v-dialog v-model="userSearchDialog" max-width="600px">
         <v-card class="px-2 pb-2">
-          <shareHeader></shareHeader>
+          <shareHeader :trackId="activeTrackId" @shared="shared(...arguments)"></shareHeader>
           <userSearch></userSearch>
           <userTable></userTable>
         </v-card>
       </v-dialog>
+
+      <!-- Success snackbar -->
+      <v-snackbar :top="snackbar.top" v-model="snackbar.active" :timeout="snackbar.timeout">
+        {{ snackbar.text }}
+        <template v-slot:action="{ attrs }">
+          <v-btn color="blue" text v-bind="attrs" @click="snackbar.active = false">Close</v-btn>
+        </template>
+      </v-snackbar>
 
       <!-- Image display dialog -->
       <v-dialog v-model="img">
         <v-img :src="this.image"></v-img>
       </v-dialog>
 
+      <!-- Track actual -->
       <v-col
         v-for="(column, cidx) in editableTracks"
         :key="cidx"
-        cols="10"
+        cols="12"
         sm="6"
-        md="3"
+        md="4"
+        lg="4"
+        xl="3"
         class="py-4 px-4"
       >
         <!-- Card main card -->
@@ -126,7 +137,7 @@ import blocksTemplate from "../components/blocksTemplate";
 import trackstatuschips from "../components/trackStatusChips";
 
 export default {
-  name: "Dashboard",
+  name: "dashboard",
 
   metaInfo: {
     title: "Dashboard and learning tracks",
@@ -151,7 +162,10 @@ export default {
       import(
         /* webpackChunkName: "userTable" */ "../components/tracks/userTable"
       ),
-    shareHeader: () => import(/* webpackChunkName: "shareHeader" */ "../components/tracks/shareHeader" )
+    shareHeader: () =>
+      import(
+        /* webpackChunkName: "shareHeader" */ "../components/tracks/shareHeader"
+      )
   },
 
   data() {
@@ -168,6 +182,13 @@ export default {
       chips: {},
       edit: false,
       drag: false,
+      activeTrackId: 'ghg',
+      snackbar: {
+        active: false,
+        text: "Track shared successfully",
+        timeout: 4000,
+        top: true
+      },
       editableTracks: JSON.parse(JSON.stringify(this.$store.state.self.tracks)),
       tracks: this.$store.state.self.tracks,
       navDrawer: this.$store.state.navDrawer
@@ -204,9 +225,20 @@ export default {
       this.dialog = true;
     },
     addOne() {},
-    share(track) {
+    share(id) {
       this.userSearchDialog = true;
-      track;
+      this.activeTrackId = id.trackId;
+    },
+    shared(result) {
+      console.log(result);
+      if (result.success == true) {
+        this.snackbar.text = "Track shared successfully"
+        this.snackbar.active = true;
+        this.userSearchDialog = false;
+      } else {
+        this.snackbar.active = true;
+        this.snackbar.text = `Failed. ${result.message}. Please try again.`
+      }
     }
   },
 

@@ -32,13 +32,16 @@ class api {
             });
     }
 
-    createTrack(instance, window) {
-        instance.loading = true;
+    createTrack(instance, window, status) {
+
+        instance.track.private = (status == 'public' ? false : true)
+
+        instance[`${status}Loading`] = true;
         instance.$http
             .create({ withCredentials: true })
             .post(`${instance.$api}/api/track`, instance.track)
             .then(function (response) {
-                instance.loading = false;
+                instance[`${status}Loading`] = false;
                 instance.trackAdder = false;
                 if (response.data.success === true) {
                     var track = JSON.parse(JSON.stringify(instance.track));
@@ -51,7 +54,7 @@ class api {
                 }
             })
             .catch(function (error) {
-                instance.loading = false;
+                instance[`${status}Loading`] = false;
                 console.log(error);
                 window.alert("Oops! something happened. You might offline");
             });
@@ -87,6 +90,32 @@ function verify(url, store) {
         })
 }
 
+function fetchTrack(instance) {
+    return axios.create({ withCredentials: true })
+        .get(`${instance.$api}/api/track/single`, {
+            params: {
+                id: instance.$route.query.id
+            }
+        })
+        .then(response => {
+            console.log(response)
+            if (response.data.success) {
+                instance.$store.commit("updatePublicTrack", response.data.result.track);
+                return true;
+            } else {
+                return false;
+            }
+        })
+        .catch(function (error) { // eslint-disable-line
+            console.log(error)
+            return false;
+        })
+}
+
+function fetchAllTracks() {
+
+}
+
 export default new api;
 
-export { verify }
+export { verify, fetchTrack, fetchAllTracks }

@@ -7,13 +7,17 @@ export default new Vuex.Store({
   strict: true,
   state: {
     auth: false,
+    assets: {
+      chats: [],
+      privateTracks: [],
+      friends: []
+    },
     socketConnected: false,
     navDrawer: { state: true },
     dash: {
       color: "#263238",
       colors: ["#1A237E", "#1B5E20", "#FF4081", "#673AB7", "#455A64", "#263238"],
     },
-    tracks: [],
     navIcons: [
       { name: "notify", icon: "mdi-bell", link: "", color: "" },
       { name: "options", icon: "mdi-dots-vertical", link: "", color: "" },
@@ -98,6 +102,10 @@ export default new Vuex.Store({
         }
       ],
       users: []
+    },
+    publicTracks: {
+      single: {},
+      multiple: []
     }
   },
   mutations: {
@@ -297,6 +305,10 @@ export default new Vuex.Store({
 
     updateTracks(state, payload) {
       state.self.tracks = JSON.parse(JSON.stringify(payload))
+    },
+
+    updatePublicTrack(state, track){
+      state.publicTracks.single = track
     },
 
     deleteTrack(state, payload) {

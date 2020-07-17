@@ -13,11 +13,11 @@ Vue.use(VueChatScroll);
 Vue.prototype.$api = (process.env.VUE_APP_ENV ? 'http://localhost:5443' : 'https://weskool.team:5443');
 Vue.prototype.$uploads = (process.env.VUE_APP_ENV ? 'http://localhost:6443' : 'https://weskool.team:6443');
 Vue.prototype.$downloads = (process.env.VUE_APP_ENV ? 'http://localhost:7443' : 'https://weskool.team:7443');
-Vue.config.devtools = false
-
-// Add axios to the global object
+Vue.prototype.$site = (process.env.VUE_APP_ENV ? 'http://localhost:8080' : 'https://weskool.team');
 Vue.prototype.$http = axios;
+
 Vue.config.productionTip = false;
+Vue.config.devtools = false
 Vue.prototype.$socket = io.connect(Vue.prototype.$api);
 Vue.prototype.$openSocket = function () {
 
@@ -72,6 +72,15 @@ Vue.prototype.$openSocket = function () {
   socket.on("summaries", function (response) {
     if (response.success == true) {
       store.commit("updateSummaries", response.data)
+    }
+  });
+
+  socket.on("trackUpdated", function (response){
+    if (response.success == true) {
+      console.log('success')
+      // 
+    } else {
+      // 
     }
   })
 

@@ -30,12 +30,10 @@
           </template>
 
           <v-list>
-            <div v-for="(item, i) in items" :key="i" >
-              <v-list-item  @click="action(item.title)">
-                <v-icon small left>{{ item.icon }}</v-icon>
-                <v-list-item-title>{{ item.title }}</v-list-item-title>
-              </v-list-item>
-            </div>
+            <v-list-item v-for="(item, i) in items" :key="i" @click="action(item.title)">
+              <v-icon small left>{{ item.icon }}</v-icon>
+              <v-list-item-title>{{ item.title }}</v-list-item-title>
+            </v-list-item>
           </v-list>
         </v-menu>
       </v-col>
@@ -46,14 +44,14 @@
 
 <script>
 export default {
-  props: ["column", "index", "Public"],
+  props: ["column", "index"],
 
   data() {
     return {
       items: [
-        { title: "Edit", icon: "mdi-circle-edit-outline", publicState: false },
-        { title: "Share", icon: "mdi-share-variant", publicState: true },
-        { title: "Delete", icon: "mdi-trash-can-outline", publicState: false }
+        { title: "Edit", icon: "mdi-circle-edit-outline" },
+        { title: "Share", icon: "mdi-share-variant" },
+        { title: "Delete", icon: "mdi-trash-can-outline" }
         // { title: "Duplicate", icon: "mdi-content-duplicate" }
       ],
       selection: [],

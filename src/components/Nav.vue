@@ -36,53 +36,11 @@
       <v-btn class="px-2 mx-3" v-if="admin" small color="red" outlined to="/admin">Admin</v-btn>
 
       <!-- Nav bar buttons -->
-      <!-- Add track icon -->
-      <v-menu
-        v-model="trackAdder"
-        :close-on-content-click="false"
-        :nudge-bottom="25"
-        :nudge-left="130"
-        max-width="300"
-        min-width="265"
-        absolute
-        offset-y
-      >
-        <template v-slot:activator="{ on }">
-          <v-btn icon color="indigo" v-on="on">
-            <v-icon>mdi-plus-outline</v-icon>
-          </v-btn>
-        </template>
-
-        <v-card>
-          <v-list>
-            <v-list-item>
-              <v-list-item-content class="text-center">
-                <v-list-item-title>CREATE NEW TRACK</v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
-          </v-list>
-
-          <v-divider></v-divider>
-
-          <v-list>
-            <!-- Track name -->
-            <v-list-item class="pt-1">
-              <v-text-field v-model="track.name" label="Track name"></v-text-field>
-            </v-list-item>
-          </v-list>
-
-          <v-row no-gutters justify="center" class="pb-2">
-            <v-card-actions>
-              <v-btn color="indigo" :loading="loading" @click="createTrack()">
-                <v-icon>mdi-plus-thick</v-icon>
-              </v-btn>
-            </v-card-actions>
-          </v-row>
-        </v-card>
-      </v-menu>
-
+      <!-- Track creator -->
+      <trackCreator></trackCreator>
+      
       <!-- Notifications icon -->
-      <v-menu v-if="path !== '/chat'" offset-y>
+      <v-menu v-if="authorized" offset-y>
         <template v-slot:activator="{ on, attrs }">
           <v-btn icon color v-on="on" v-bind="attrs">
             <v-badge
@@ -130,27 +88,18 @@
 </template>
 
 <script>
-import apiClient from "../controllers/api";
 
 export default {
-  name: "Dashboard",
+  name: "Navbar",
   components: {
-    chatPreview: () =>
-      import(/* webpackChunkName: "chatPreview" */ "./chat/chatPreview")
+    chatPreview: () => import(/* webpackChunkName: "chatNavPreview" */ "./chat/chatPreview"),
+    trackCreator: () => import(/* webpackChunkName: "trackCreatorNav" */ "./nav/trackCreator")
   },
   data() {
     return {
       loading: false,
       drawer: true,
-      track: {
-        name: "",
-        active: true,
-        blocks: [],
-        archived: []
-      },
       fav: true,
-      trackAdder: false,
-      taskAdder: false,
       notifications: false,
       options: false,
       message: false,
@@ -158,7 +107,7 @@ export default {
       x: 0,
       y: 0,
       icons: this.$store.state.navIcons,
-      admin: this.$store.state.admin.authorized,
+      admin: this.$store.state.admin.authorized
     };
   },
 
@@ -181,14 +130,11 @@ export default {
           }
         })
         .catch(function(error) {
-          console.log(error)
+          console.log(error);
           window.alert(
             "Cannot logout, Browser error. Try clearing your cookies instead"
           );
         });
-    },
-    createTrack() {
-      apiClient.createTrack(this, window);
     },
     clearNotifications() {
       this.$store.commit("clearNotifications");
@@ -209,7 +155,10 @@ export default {
       return this.$store.state.notifications.chat;
     },
     path() {
-      return this.$route.path
+      return this.$route.path;
+    },
+    authorized() {
+      return this.$store.state.auth;
     }
   },
 
