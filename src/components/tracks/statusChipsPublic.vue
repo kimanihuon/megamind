@@ -3,7 +3,7 @@
     <v-row no-gutters justify="space-around">
       <!-- Chips -->
       <v-col cols="11">
-        <v-sheet class="mx-auto py-1 pl-2" elevation="5" max-width="600">
+        <v-sheet outlined class="mx-auto py-1 pl-2" elevation="5" max-width="600">
           <v-chip-group v-model="selection" show-arrows>
             <v-chip
               text-color="white"
@@ -44,14 +44,12 @@
 
 <script>
 export default {
-  props: ["column", "index"],
+  props: ["track", "index"],
 
   data() {
     return {
       items: [
-        { title: "Edit", icon: "mdi-circle-edit-outline" },
         { title: "Share", icon: "mdi-share-variant" },
-        { title: "Delete", icon: "mdi-trash-can-outline" }
         // { title: "Duplicate", icon: "mdi-content-duplicate" }
       ],
       selection: [],
@@ -105,40 +103,15 @@ export default {
             }
           }
         },
-        // Privacy
-        {
-          name: function(privacyState) {
-            if (privacyState) {
-              return "Private";
-            } else {
-              return "Public";
-            }
-          },
-          privacy: true,
-          icon: "mdi-earth",
-          outlined: function(columnActive, privacyState) {
-            columnActive;
-            if (privacyState) {
-              return true;
-            } else {
-              return false;
-            }
-          },
-          color: function(columnActive, privacyState) {
-            columnActive;
-            if (privacyState) {
-              return "#0091EA";
-            } else {
-              return "#33691E";
-            }
-          }
-        }
       ],
       chipColor: "indigo",
       chipColorArchive: "red",
       privateColor: "#0091EA",
-      publicColor: "#33691E"
+      publicColor: "#33691E",
+      column: {}
     };
+  },
+  computed: {
   },
   methods: {
     action(name) {
@@ -183,6 +156,9 @@ export default {
         track.private = !track.private;
       }
     }
+  },
+  mounted(){
+    this.column = JSON.parse(JSON.stringify(this.track))
   }
 };
 </script>

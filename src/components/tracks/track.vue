@@ -23,7 +23,7 @@
         <!-- Active and archived blocks buttons -->
         <trackstatuschips
           :Public="true"
-          :column="column"
+          :track="column"
           :index="index"
           @toggle="toggle(...arguments)"
           @share="share(...arguments)"

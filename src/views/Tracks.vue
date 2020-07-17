@@ -57,7 +57,6 @@ export default {
           instance.requestSuccess.state = false;
           instance.fetching.state = false;
         }
-        console.log(instance.fetching)
       });
     } else {
       fetchAllTracks(this);
