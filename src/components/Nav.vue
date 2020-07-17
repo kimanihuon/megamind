@@ -38,7 +38,7 @@
       <!-- Nav bar buttons -->
       <!-- Track creator -->
       <trackCreator></trackCreator>
-      
+
       <!-- Notifications icon -->
       <v-menu v-if="authorized" offset-y>
         <template v-slot:activator="{ on, attrs }">
@@ -88,12 +88,13 @@
 </template>
 
 <script>
-
 export default {
   name: "Navbar",
   components: {
-    chatPreview: () => import(/* webpackChunkName: "chatNavPreview" */ "./chat/chatPreview"),
-    trackCreator: () => import(/* webpackChunkName: "trackCreatorNav" */ "./nav/trackCreator")
+    chatPreview: () =>
+      import(/* webpackChunkName: "chatNavPreview" */ "./chat/chatPreview"),
+    trackCreator: () =>
+      import(/* webpackChunkName: "trackCreatorNav" */ "./nav/trackCreator")
   },
   data() {
     return {
@@ -106,8 +107,7 @@ export default {
       hints: true,
       x: 0,
       y: 0,
-      icons: this.$store.state.navIcons,
-      admin: this.$store.state.admin.authorized
+      icons: this.$store.state.navIcons
     };
   },
 
@@ -159,6 +159,9 @@ export default {
     },
     authorized() {
       return this.$store.state.auth;
+    },
+    admin() {
+      return this.$store.state.admin.authorized;
     }
   },
 
