@@ -20,7 +20,7 @@
         </v-list-item>
       </v-list>
 
-      <template v-slot:append>
+      <template v-if="authorized" v-slot:append>
         <div class="pa-2">
           <v-btn block outlined @click="logout()">Logout</v-btn>
         </div>
