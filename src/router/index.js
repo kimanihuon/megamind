@@ -3,7 +3,6 @@ import VueRouter from "vue-router";
 import store from "../store/index";
 import VueMeta from 'vue-meta';
 import Error404 from "../views/Error404.vue";
-import Login from "../views/Login.vue";
 import { verify } from "../controllers/api";
 
 Vue.use(VueMeta, {
@@ -11,8 +10,6 @@ Vue.use(VueMeta, {
   refreshOnceOnNavigation: true
 });
 Vue.use(VueRouter);
-
-var dashboard = import(/* webpackChunkName: "dashboard" */ "../views/Dashboard.vue");
 
 const routes = [
   {
@@ -25,7 +22,9 @@ const routes = [
   {
     path: "/login",
     name: "login",
-    component: Login,
+    component: function () {
+      return import(/* webpackChunkName: "login" */ "../views/Login.vue");
+    },
     meta: {
       requiresGuest: true,
     }
@@ -35,7 +34,7 @@ const routes = [
     path: "/dashboard",
     name: "dashboard",
     component: function () {
-      return dashboard;
+      return import(/* webpackChunkName: "dashboard" */ "../views/Dashboard.vue");
     },
     meta: {
       requiresAuth: true

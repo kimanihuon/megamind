@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <!-- Nav and Drawer -->
-    <Nav v-if="auth"></Nav>
+    <Nav/>
 
     <!-- View -->
     <v-main style="padding-top: 24px;">
@@ -10,7 +10,7 @@
 
     <!-- Footer -->
     <v-footer v-if="!auth" app>
-      <span>&copy; 2019</span>
+      <span>&copy; 2020</span>
     </v-footer>
   </v-app>
 </template>
@@ -26,8 +26,7 @@ export default {
   },
 
   data: () => ({
-    // Current window path
-    path: window.location.pathname
+    
   }),
 
   computed: {
