@@ -41,7 +41,7 @@
             small
             outlined
             color="#2196F3"
-            :loading="creatingPrivate"
+            :loading="privateLoading"
             @click="createTrack('private')"
           >
             private
@@ -51,7 +51,7 @@
             small
             outlined
             color="#FF1744"
-            :loading="creatingPublic"
+            :loading="publicLoading"
             @click="createTrack('public')"
           >
             public
@@ -69,8 +69,8 @@ import apiClient from "@/controllers/api.js";
 export default {
   data() {
     return {
-      creatingPublic: false,
-      creatingPrivate: false,
+      privateLoading: false,
+      publicLoading: false,
       trackAdder: false,
       taskAdder: false,
       track: {
